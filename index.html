@@ -1,50 +1,58 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>AstroWorld | Free Vedic Astrology Reading</title>
-<style>
-:root{--navy:#0b1022;--panel:#151e36;--gold:#dfbd75;--cream:#f7eedc;--muted:#b8c0d0}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 80% 5%,#30365b,transparent 35%),var(--navy);color:var(--cream);font:16px Arial,sans-serif;line-height:1.6}
-header,main,footer{max-width:980px;margin:auto;padding:22px}
-header{display:flex;justify-content:space-between;align-items:center}.logo{font: bold 30px Georgia;color:var(--gold)}
-select,input{background:#0d152b;color:white;border:1px solid #46516d;border-radius:8px;padding:12px;width:100%}
-.hero{text-align:center;padding:55px 20px 35px}.eyebrow{color:var(--gold);letter-spacing:3px;text-transform:uppercase;font-size:12px}
-h1,h2,h3{font-family:Georgia,serif}h1{font-size:clamp(42px,7vw,70px);line-height:1.08;margin:12px}h1 span{color:var(--gold)}
-.hero p{color:var(--muted);max-width:620px;margin:18px auto}
-.card{background:linear-gradient(145deg,#192440,#111a30);border:1px solid #35415d;border-radius:18px;padding:26px;max-width:720px;margin:20px auto}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.field{display:grid;gap:7px}.wide{grid-column:1/-1}label{font-size:13px;color:#e3d1a9}
-button{background:linear-gradient(120deg,#edcf8a,#bd9148);color:#171321;border:0;border-radius:9px;padding:13px 20px;font-weight:bold;cursor:pointer;margin:8px 8px 0 0}
-.secondary{background:transparent;border:1px solid #67718a;color:var(--cream)}
-small,.muted{color:var(--muted)}#result{display:none;background:#fff7e8;color:#282238;border-radius:16px;padding:26px;margin:25px auto;max-width:720px}
-#result h2,#result h3{color:#5a4268}.tiles{display:grid;grid-template-columns:1fr 1fr;gap:12px}.tile{border:1px solid #dfd1b8;border-radius:10px;padding:13px}.tile p{margin:4px 0}
-footer{text-align:center;color:var(--muted);font-size:12px}
-@media(max-width:600px){.grid,.tiles{grid-template-columns:1fr}.wide{grid-column:auto}.card{padding:18px}}
-@media print{body{background:white;color:#222}header,.hero,main>h2,.card,footer,#result button{display:none!important}#result{display:block!important;max-width:none}}
-</style></head>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0b1022" />
+  <meta name="description" content="AstroWorld — free bilingual Vedic birth charts and traditional astrology reports." />
+  <title>AstroWorld | Vedic Kundli</title>
+</head>
 <body>
-<header><div class="logo">✧ AstroWorld</div><select id="language" style="width:auto"><option value="en">English</option><option value="ta">தமிழ்</option></select></header>
-<section class="hero"><div class="eyebrow" data-en="Ancient wisdom · Personal reflection" data-ta="பண்டைய ஞானம் · தனிப்பட்ட சிந்தனை">Ancient wisdom · Personal reflection</div>
-<h1 data-en="Your journey,<br><span>written in the stars.</span>" data-ta="உங்கள் பயணம்,<br><span>நட்சத்திரங்களில் எழுதப்பட்டுள்ளது.</span>">Your journey,<br><span>written in the stars.</span></h1>
-<p data-en="Explore a Vedic astrology-inspired reading. Enter your birth details and create a free report in English or Tamil." data-ta="வேத ஜோதிடக் கருத்துகளால் ஈர்க்கப்பட்ட வாசிப்பைப் பெறுங்கள். பிறப்பு விவரங்களை உள்ளிட்டு ஆங்கிலம் அல்லது தமிழில் இலவச அறிக்கையை உருவாக்குங்கள்.">Explore a Vedic astrology-inspired reading. Enter your birth details and create a free report in English or Tamil.</p></section>
-<main><h2 style="text-align:center" data-en="Create your free reading" data-ta="இலவச ஜோதிட வாசிப்பை உருவாக்குங்கள்">Create your free reading</h2>
-<form class="card" id="birthForm"><div class="grid">
-<div class="field wide"><label data-en="Full name" data-ta="முழுப் பெயர்">Full name</label><input id="name" required maxlength="70" placeholder="Your name"></div>
-<div class="field"><label data-en="Date of birth" data-ta="பிறந்த தேதி">Date of birth</label><input id="dob" type="date" required></div>
-<div class="field"><label data-en="Time of birth" data-ta="பிறந்த நேரம்">Time of birth</label><input id="time" type="time" required></div>
-<div class="field wide"><label data-en="Place of birth" data-ta="பிறந்த இடம்">Place of birth</label><input id="place" required placeholder="City, State, Country"></div>
-<div class="field wide"><label data-en="Area of interest" data-ta="ஆர்வமுள்ள பகுதி">Area of interest</label><select id="focus"><option value="life">Overall life / பொதுவான வாழ்க்கை</option><option value="career">Career / தொழில்</option><option value="love">Relationships / உறவுகள்</option><option value="growth">Learning & growth / வளர்ச்சி</option></select></div>
-</div><button type="submit" data-en="Generate my report" data-ta="எனது அறிக்கையை உருவாக்கு">Generate my report</button><button class="secondary" type="reset" data-en="Clear" data-ta="நீக்கு">Clear</button>
-<p class="muted" style="font-size:12px" data-en="This demo processes details in your browser only. It does not send or store your birth details." data-ta="இந்த மாதிரி உங்கள் விவரங்களை உலாவியிலேயே செயலாக்குகிறது. அவற்றை அனுப்பவோ சேமிக்கவோ செய்யாது.">This demo processes details in your browser only. It does not send or store your birth details.</p></form>
-<section id="result"><div class="eyebrow" style="color:#9a783d">ASTROWORLD · PERSONAL READING</div><h2 id="title"></h2><p id="meta"></p><p id="intro"></p><div class="tiles" id="tiles"></div><p id="note" style="font-size:12px;border-top:1px solid #ddd;padding-top:14px"></p><button onclick="window.print()" data-en="Download / Save as PDF" data-ta="PDF ஆகப் பதிவிறக்கு">Download / Save as PDF</button></section>
-</main><footer>© <span id="year"></span> AstroWorld · For reflection and entertainment, not guaranteed predictions.</footer>
-<script>
-const copy={
-en:{intro:n=>`${n}, this introductory reading offers broad reflective themes inspired by Vedic astrology. Treat these as prompts for thoughtful choices, not fixed predictions.`,sections:{life:["Life direction","Set clear priorities and take steady, practical steps towards the goals that matter to you."],career:["Career & purpose","Strengthen a useful skill, communicate clearly and evaluate opportunities before making major decisions."],love:["Relationships","Make space for honest communication, patience and mutual respect in your important relationships."],growth:["Learning & growth","Choose one area that interests you and build a consistent learning habit. Small steps can create momentum."]},note:"Important: This demo does not calculate a Vedic Kundli, planetary positions, Lagna, Rasi, Nakshatra or Dasha. Astrology is not scientifically established as a way to predict events. Do not use this report for medical, legal or financial decisions."},
-ta:{intro:n=>`${n}, இந்த அறிமுக வாசிப்பு வேத ஜோதிடக் கருத்துகளால் ஈர்க்கப்பட்ட பொதுவான சிந்தனை வழிகாட்டியாகும். இதை உறுதியான கணிப்பாக அல்லாமல் சிந்தனைக்கான வழிகாட்டுதலாகப் பயன்படுத்துங்கள்.`,sections:{life:["வாழ்க்கைப் பாதை","தெளிவான முன்னுரிமைகளை அமைத்து, முக்கியமான இலக்குகளை நோக்கி நடைமுறைச் செயல்களைத் தொடர்ந்து மேற்கொள்ளுங்கள்."],career:["தொழில் மற்றும் நோக்கம்","பயனுள்ள திறனை மேம்படுத்தி, தெளிவாகப் பேசுங்கள். பெரிய முடிவுகளுக்கு முன் வாய்ப்புகளை ஆராயுங்கள்."],love:["உறவுகள்","முக்கியமான உறவுகளில் நேர்மையான உரையாடல், பொறுமை மற்றும் பரஸ்பர மரியாதைக்கு இடமளியுங்கள்."],growth:["கற்றல் மற்றும் வளர்ச்சி","உங்களுக்கு ஆர்வமுள்ள ஒரு துறையைத் தேர்ந்தெடுத்து தொடர்ந்து கற்றுக்கொள்ளுங்கள். சிறிய முயற்சிகள் முன்னேற்றத்தை உருவாக்கும்."]},note:"முக்கிய குறிப்பு: இந்த மாதிரி வேத ஜாதகம், கிரக நிலைகள், லக்னம், ராசி, நட்சத்திரம் அல்லது தசை ஆகியவற்றைக் கணக்கிடாது. எதிர்காலத்தை கணிக்க ஜோதிடம் அறிவியல் ரீதியாக நிரூபிக்கப்படவில்லை. மருத்துவம், சட்டம் அல்லது நிதி முடிவுகளுக்கு இதைப் பயன்படுத்த வேண்டாம்."}
-};
-document.getElementById('year').textContent=new Date().getFullYear();
-document.getElementById('language').addEventListener('change',e=>{let l=e.target.value;document.documentElement.lang=l;document.querySelectorAll('[data-en]').forEach(x=>x.innerHTML=x.dataset[l])});
-document.getElementById('birthForm').addEventListener('submit',e=>{e.preventDefault();let l=document.getElementById('language').value,n=document.getElementById('name').value.trim(),d=document.getElementById('dob').value,p=document.getElementById('place').value.trim(),t=document.getElementById('time').value,f=document.getElementById('focus').value,c=copy[l],s=c.sections[f];
-document.getElementById('title').textContent=l==='ta'?n+' அவர்களின் தனிப்பட்ட வாசிப்பு':n+"'s Personal Reading";document.getElementById('meta').textContent=(l==='ta'?'பிறந்த தேதி: ':'Birth date: ')+d+' · '+t+' · '+p;document.getElementById('intro').textContent=c.intro(n);
-document.getElementById('tiles').innerHTML='<div class="tile"><h3>'+s[0]+'</h3><p>'+s[1]+'</p></div><div class="tile"><h3>'+(l==='ta'?'நடைமுறை நோக்கம்':'A practical intention')+'</h3><p>'+(l==='ta'?'இந்த வாரம் ஒரு சிறிய, பயனுள்ள செயலைத் தேர்ந்தெடுத்து தொடங்குங்கள்.':'Choose one useful action this week and take the first step.')+'</p></div>';
-document.getElementById('note').textContent=c.note;document.getElementById('result').style.display='block';document.getElementById('result').scrollIntoView({behavior:'smooth'});});
-</script></body></html>
+  <div id="app">
+    <header class="topbar">
+      <a class="brand" href="#"><span>✧</span> AstroWorld</a>
+      <select id="language" aria-label="Language"><option value="en">English</option><option value="ta">தமிழ்</option></select>
+    </header>
+    <section class="hero">
+      <div class="eyebrow" data-i18n="eyebrow">VEDIC ASTROLOGY · LAHIRI AYANAMSA</div>
+      <h1 data-i18n="heroTitle">Your cosmic map,<br><em>calculated with care.</em></h1>
+      <p data-i18n="heroText">Create a birth chart with Rasi, Navamsa, Nakshatra and Vimshottari Dasha — with a free printable Kundli report.</p>
+    </section>
+    <main>
+      <section class="form-card">
+        <div class="section-heading"><div class="eyebrow" data-i18n="birthDetails">BIRTH DETAILS</div><h2 data-i18n="createChart">Create your Vedic birth chart</h2><p data-i18n="formIntro">Enter the birth details as accurately as possible. Birth time and location affect the Ascendant and house placements.</p></div>
+        <form id="birthForm">
+          <div class="form-grid">
+            <label><span data-i18n="fullName">Full name</span><input id="fullName" required maxlength="80" autocomplete="name" /></label>
+            <label><span data-i18n="birthDate">Date of birth</span><input id="birthDate" type="date" required /></label>
+            <label><span data-i18n="birthTime">Local time of birth</span><input id="birthTime" type="time" required /></label>
+            <label class="location-field"><span data-i18n="birthPlace">Place of birth</span><div class="inline"><input id="birthPlace" required placeholder="City, country" /><button type="button" class="outline" id="findPlace" data-i18n="findPlace">Find</button></div><small id="placeStatus" data-i18n="placeHelp">Search to fill coordinates and time zone.</small></label>
+            <label><span data-i18n="latitude">Latitude</span><input id="latitude" type="number" step="any" required placeholder="e.g. 13.0827" /></label>
+            <label><span data-i18n="longitude">Longitude</span><input id="longitude" type="number" step="any" required placeholder="e.g. 80.2707" /></label>
+            <label class="wide"><span data-i18n="timezone">Birthplace time zone (IANA)</span><input id="timezone" required value="Asia/Kolkata" placeholder="Asia/Kolkata" /><small data-i18n="timezoneHelp">Use the time zone applicable on the date of birth. The place search may fill this automatically.</small></label>
+          </div>
+          <div class="form-actions"><button class="primary" id="generate" type="submit" data-i18n="generate">Calculate my Kundli</button><span id="engineStatus" role="status" class="status" data-i18n="engineReady">Swiss Ephemeris engine loads when you calculate.</span></div>
+        </form>
+        <p class="privacy" data-i18n="privacy">Privacy: calculations run in your browser. Place search contacts Open-Meteo for geocoding; birth date and birth time are not sent to it.</p>
+      </section>
+
+      <section id="report" class="report" hidden>
+        <div class="report-head">
+          <div><div class="eyebrow">ASTROWORLD · PERSONAL KUNDLI</div><h2 id="personTitle"></h2><p id="birthMeta" class="muted"></p></div>
+          <button class="primary pdf-button" id="downloadPdf" data-i18n="downloadPdf">Download PDF Kundli</button>
+        </div>
+        <div class="summary-strip" id="summary"></div>
+        <section class="report-section"><div class="section-heading"><div class="eyebrow" data-i18n="birthChart">BIRTH CHART</div><h3 data-i18n="rasiTitle">Rasi Chart · D1</h3><p data-i18n="rasiText">Sidereal planetary placements by sign. South Indian chart layout.</p></div><div id="rasiChart" class="chart-grid"></div></section>
+        <section class="report-section"><div class="section-heading"><div class="eyebrow" data-i18n="divisionalChart">DIVISIONAL CHART</div><h3 data-i18n="navamsaTitle">Navamsa Chart · D9</h3><p data-i18n="navamsaText">Ninth harmonic divisional chart, traditionally used as one factor in relationship and dharma analysis.</p></div><div id="navamsaChart" class="chart-grid"></div></section>
+        <section class="report-section"><div class="section-heading"><div class="eyebrow" data-i18n="nakshatraSection">LUNAR MANSION</div><h3 data-i18n="nakshatraTitle">Nakshatra & Pada</h3></div><div id="nakshatraPanel" class="info-panel"></div></section>
+        <section class="report-section"><div class="section-heading"><div class="eyebrow" data-i18n="dashaSection">PLANETARY PERIODS</div><h3 data-i18n="dashaTitle">Vimshottari Dasha</h3><p data-i18n="dashaText">Mahadasha and Antardasha periods calculated from the Moon's Nakshatra.</p></div><div id="dashaPanel" class="table-wrap"></div></section>
+        <section class="report-section"><div class="section-heading"><div class="eyebrow" data-i18n="lifeReports">LIFE THEMES</div><h3 data-i18n="reportsTitle">Traditional interpretive reports</h3><p data-i18n="reportsText">General Jyotish-style themes based on house placements. These are interpretive traditions, not guaranteed events.</p></div><div id="lifeReports" class="life-grid"></div></section>
+        <section class="report-section"><div class="section-heading"><div class="eyebrow" data-i18n="planetaryPositions">PLANETARY POSITIONS</div><h3 data-i18n="planetTable">Graha table</h3></div><div id="planetTable" class="table-wrap"></div></section>
+        <p class="disclaimer" data-i18n="disclaimer">Astrology is a traditional belief system and is not scientifically established as a way to predict events. This report is for cultural, reflective and entertainment purposes only; it is not medical, legal or financial advice. Verify birth-time accuracy and compare calculations with a qualified practitioner before relying on them.</p>
+      </section>
+    </main>
+    <footer>© <span id="year"></span> AstroWorld · <span data-i18n="footer">Free Vedic astrology tools in English and Tamil.</span></footer>
+  </div>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

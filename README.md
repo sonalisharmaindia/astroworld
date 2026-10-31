@@ -1,6 +1,6 @@
 # AstroWorld — Advanced Vedic Kundli
 
-This is a Vite-based bilingual (English/Tamil) website starter. It uses the `@af/sweph-wasm` browser package for sidereal planetary positions and Lagna using Lahiri ayanamsa. It generates:
+This is a Vite-based bilingual (English/Tamil) website starter. It uses the `astronomy-engine` browser package for tropical planetary positions, then applies an approximate Lahiri ayanamsa correction for sidereal placements. It generates:
 - Rasi (D1) and Navamsa (D9) chart layouts
 - Moon Nakshatra and Pada
 - Vimshottari Mahadasha and Antardasha timelines
@@ -29,9 +29,9 @@ npm run build
 5. Open the Pages URL shown in the Actions deployment.
 
 ## Accuracy, conventions and review notes
-- The app requests the Swiss-Ephemeris-backed `@af/sweph-wasm` calculation package, Lahiri ayanamsa (`ayanamsa: 1`), and whole-sign house mapping based on the sidereal Ascendant.
+- The app uses Astronomy Engine for geocentric tropical ecliptic positions and applies a polynomial Lahiri-style ayanamsa approximation. Rahu uses a mean-node formula; Ketu is opposite Rahu. Ascendant is calculated from local sidereal time and obliquity. Whole-sign house mapping is based on the sidereal Ascendant.
 - The app requires birth date, local birth time, birthplace latitude/longitude and IANA time zone. Place lookup uses Open-Meteo Geocoding. Confirm the suggested place and historical time zone before calculation.
-- The API interface is based on the package's published examples (`createSweph`, `calculatePlanets`, `calculateLagna`). Package API changes may require adapting `src/main.js`. This source has not been built or validated in this environment; run `npm install` and `npm run build`, then verify several charts against a trusted reference calculator before public launch.
+- This implementation is an approximate browser-side calculation, not Swiss Ephemeris. It has not been validated against professional ephemeris software. Run `npm install` and `npm run build`, then compare multiple charts against a trusted reference calculator before public launch. Do not describe the output as professionally verified or fully accurate.
 - Dasha timing uses the standard 120-year Vimshottari sequence and the Moon's Nakshatra fraction. It uses 365.2425 days per year as an implementation convention; some software uses other year-length conventions and may differ slightly.
 - Marriage, career and finance text is a traditional interpretive prompt, not a deterministic prediction or professional advice. It should be reviewed by a qualified Jyotish practitioner before being represented as expert guidance.
 - The chart display is a South Indian-style sign grid. Verify sign placement and chart orientation with test cases before public release.
