@@ -42,7 +42,7 @@ function zonedDateToUtc(dateStr,timeStr,tz){
   }
   return new Date(guess);
 }
-async function function lahiriAyanamsa(jd) {
+function lahiriAyanamsa(jd) {
   const T = (jd - 2451545.0) / 36525;
   return 23.85675 + 1.396042 * T + 0.000308 * T * T;
 }
