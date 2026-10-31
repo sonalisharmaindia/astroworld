@@ -1,4 +1,3 @@
-
 import './style.css';
 import * as Astronomy from 'astronomy-engine';
 
