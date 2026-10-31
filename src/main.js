@@ -112,7 +112,8 @@ function ascendantLongitude(date, jd, lat, lon) {
     (Math.atan2(y, x) * 180 / Math.PI + 360) % 360;
 
   return norm(tropical - lahiriAyanamsa(jd));
-function findPlanet(list,id){
+}
+  function findPlanet(list,id){
   const aliases={sun:['sun'],moon:['moon'],mars:['mars'],mercury:['mercury'],jupiter:['jupiter'],venus:['venus'],saturn:['saturn'],rahu:['rahu','mean_node','north_node'],ketu:['ketu','south_node']};
   return list.find(p=>aliases[id].includes(String(p.id||p.name||'').toLowerCase()));
 }
