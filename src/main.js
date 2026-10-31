@@ -1,6 +1,6 @@
 
 import './style.css';
-import { createSweph } from '@af/sweph-wasm';
+import * as Astronomy from 'astronomy-engine';
 
 const $ = (id) => document.getElementById(id);
 const names = {
@@ -42,10 +42,77 @@ function zonedDateToUtc(dateStr,timeStr,tz){
   }
   return new Date(guess);
 }
-async function getEngine(){
-  if(!enginePromise) enginePromise=(async()=>{const e=await createSweph();return e;})();
-  return enginePromise;
+async function function lahiriAyanamsa(jd) {
+  const T = (jd - 2451545.0) / 36525;
+  return 23.85675 + 1.396042 * T + 0.000308 * T * T;
 }
+
+function tropicalEclipticLongitude(body, date) {
+  const v = Astronomy.GeoVector(body, date, true);
+  const e = Astronomy.Ecliptic(v);
+  return norm(e.elon);
+}
+
+function siderealLongitude(body, date, jd) {
+  return norm(
+    tropicalEclipticLongitude(body, date) -
+    lahiriAyanamsa(jd)
+  );
+}
+
+function getPlanetPositions(date, jd) {
+  const bodies = [
+    ['Sun', Astronomy.Body.Sun],
+    ['Moon', Astronomy.Body.Moon],
+    ['Mars', Astronomy.Body.Mars],
+    ['Mercury', Astronomy.Body.Mercury],
+    ['Jupiter', Astronomy.Body.Jupiter],
+    ['Venus', Astronomy.Body.Venus],
+    ['Saturn', Astronomy.Body.Saturn]
+  ];
+
+  const planets = bodies.map(([name, body]) => ({
+    name,
+    longitude: siderealLongitude(body, date, jd)
+  }));
+
+  const T = (jd - 2451545.0) / 36525;
+  const rahu = norm(
+    125.04452 - 1934.136261 * T +
+    0.0020708 * T * T + T * T * T / 450000
+  );
+
+  planets.push({
+    name: 'Rahu',
+    longitude: norm(rahu - lahiriAyanamsa(jd))
+  });
+
+  planets.push({
+    name: 'Ketu',
+    longitude: norm(rahu + 180 - lahiriAyanamsa(jd))
+  });
+
+  return planets;
+}
+
+function ascendantLongitude(date, jd, lat, lon) {
+  const eps =
+    (23.43929111 - 0.013004167 * ((jd - 2451545.0) / 36525))
+    * Math.PI / 180;
+
+  const theta =
+    Astronomy.SiderealTime(date) * 15 * Math.PI / 180 +
+    lon * Math.PI / 180;
+
+  const phi = lat * Math.PI / 180;
+  const y = Math.cos(theta);
+  const x = -(Math.sin(theta) * Math.cos(eps) +
+    Math.tan(phi) * Math.sin(eps));
+
+  const tropical =
+    (Math.atan2(y, x) * 180 / Math.PI + 360) % 360;
+
+  return norm(tropical - lahiriAyanamsa(jd));
 function findPlanet(list,id){
   const aliases={sun:['sun'],moon:['moon'],mars:['mars'],mercury:['mercury'],jupiter:['jupiter'],venus:['venus'],saturn:['saturn'],rahu:['rahu','mean_node','north_node'],ketu:['ketu','south_node']};
   return list.find(p=>aliases[id].includes(String(p.id||p.name||'').toLowerCase()));
@@ -112,16 +179,37 @@ function renderChart(data){
   $('report').hidden=false;$('report').scrollIntoView({behavior:'smooth'});
 }
 async function calculate(date,time,timezone,lat,lon){
-  const sweph=await getEngine();
-  const birthUtc=zonedDateToUtc(date,time,timezone);
-  const planetsRaw=await sweph.calculatePlanets(birthUtc,{ayanamsa:1});
-  const lagna=await sweph.calculateLagna(birthUtc,{latitude:lat,longitude:lon},{ayanamsa:1});
-  const planetList=PLANET_IDS.map(([name,id])=>{
-    if(id==='ketu') {const rahu=PLANET_IDS.find(x=>x[1]==='rahu');const p=findPlanet(planetsRaw,rahu[1]);return {name,longitude:norm((p?.longitude??0)+180)};}
-    const p=findPlanet(planetsRaw,id);if(!p)throw new Error(`Missing planetary result: ${name}`);return {name,longitude:norm(p.longitude),speed:p.speed??p.longitudeSpeed??0};
-  });
-  const moon=planetList.find(p=>p.name==='Moon');
-  return {person:$('fullName').value.trim(),date,time,place:$('birthPlace').value.trim(),timezone,lagna:{longitude:lagna.longitude},planets:planetList,dasha:dashaSchedule(moon.longitude,birthUtc)};
+  const birthUtc = zonedDateToUtc(date,time,timezone);
+
+  const jd = birthUtc.getTime() / 86400000 + 2440587.5;
+
+  const planetList = getPlanetPositions(birthUtc,jd);
+
+  const lagnaLongitude = ascendantLongitude(
+    birthUtc,
+    jd,
+    lat,
+    lon
+  );
+
+  const moon = planetList.find(p => p.name === 'Moon');
+
+  if (!moon) {
+    throw new Error('Moon position could not be calculated');
+  }
+
+  return {
+    person: $('fullName').value.trim(),
+    date,
+    time,
+    place: $('birthPlace').value.trim(),
+    timezone,
+    lagna: {
+      longitude: lagnaLongitude
+    },
+    planets: planetList,
+    dasha: dashaSchedule(moon.longitude,birthUtc)
+  };
 }
 $('year').textContent=new Date().getFullYear();
 $('language').addEventListener('change',e=>{lang=e.target.value;document.documentElement.lang=lang;document.querySelectorAll('[data-i18n]').forEach(el=>el.textContent=names[lang][el.dataset.i18n]||el.textContent);if(lastChart)renderChart(lastChart);});
