@@ -169,6 +169,80 @@ function chartEvidence(house,data,asc,lang,names,planetName){
   : `${ordinal(house)} house in ${signName}; ruler: ${planetName(lord)}${pHouse?` in the ${ordinal(pHouse)} house`:''}; occupants: ${occupants.length?occupants.map(x=>planetName(x.name)).join(', '):'none'}.`;
 }
 
+
+const PRACTICAL_ACTIONS = {
+ en:{
+  1:'Take the lead where you have a clear goal. Build confidence through small decisions and steady follow-through.',
+  2:'Make this concrete through clear conversations, careful budgeting and a realistic plan for shared responsibilities.',
+  3:'Put this connection to work through communication, writing, learning a practical skill and building useful contacts.',
+  4:'Give attention to your home base, emotional steadiness and the support systems that help you make good decisions.',
+  5:'Make room for learning, creative thinking and thoughtful choices. Test ideas before committing significant time or money.',
+  6:'Progress is likely to depend on routines, organisation and solving everyday problems one step at a time.',
+  7:'Work with others rather than carrying everything alone. Clear agreements, listening and mutual expectations are especially important.',
+  8:'Take time to understand the deeper or shared parts of the situation. Be transparent about obligations, risks and resources.',
+  9:'Broaden your options through further learning, mentors, travel or exposure to different viewpoints.',
+  10:'Turn intentions into visible responsibility. Set a clear goal, build expertise and let consistent work demonstrate your capability.',
+  11:'Develop supportive networks and long-term plans. Review progress regularly instead of expecting immediate results.',
+  12:'Allow time for reflection and recovery. Check hidden costs, avoid overextension and make space for priorities that matter.'
+ },
+ ta:{
+  1:'தெளிவான இலக்கு உள்ள இடங்களில் முன்முயற்சி எடுங்கள். சிறிய முடிவுகளைத் தொடர்ந்து செயல்படுத்துவதன் மூலம் தன்னம்பிக்கையை வளர்த்துக்கொள்ளுங்கள்.',
+  2:'தெளிவான உரையாடல், கவனமான பட்ஜெட் மற்றும் பகிரப்பட்ட பொறுப்புகளுக்கான நடைமுறைத் திட்டம் மூலம் இதைச் செயல்படுத்துங்கள்.',
+  3:'தொடர்பாடல், எழுத்து, நடைமுறைத் திறன் கற்றல் மற்றும் பயனுள்ள தொடர்புகளை உருவாக்குவதில் கவனம் செலுத்துங்கள்.',
+  4:'உங்கள் இல்லச் சூழல், மனநிலை நிலைத்தன்மை மற்றும் நல்ல முடிவுகளை எடுக்க உதவும் ஆதரவு அமைப்புகளுக்கு முக்கியத்துவம் கொடுங்கள்.',
+  5:'கற்றல், படைப்பாற்றல் மற்றும் சிந்தித்து முடிவெடுப்பதற்கு இடமளியுங்கள். அதிக நேரம் அல்லது பணம் செலவிடும் முன் யோசனைகளைச் சோதித்துப் பாருங்கள்.',
+  6:'ஒழுங்கான அன்றாட நடைமுறைகள், திட்டமிடல் மற்றும் சிறிய படிகளாகப் பிரச்சினைகளைத் தீர்ப்பது முன்னேற்றத்திற்கு உதவும்.',
+  7:'அனைத்தையும் தனியாகச் சுமக்காமல் மற்றவர்களுடன் இணைந்து செயல்படுங்கள். தெளிவான ஒப்பந்தம், கவனமாகக் கேட்பது மற்றும் பரஸ்பர எதிர்பார்ப்புகள் முக்கியம்.',
+  8:'சூழ்நிலையின் ஆழமான அல்லது பகிரப்பட்ட அம்சங்களைப் புரிந்துகொள்ள நேரம் எடுத்துக்கொள்ளுங்கள். பொறுப்புகள், அபாயங்கள் மற்றும் வளங்கள் குறித்து வெளிப்படையாக இருங்கள்.',
+  9:'மேலும் கற்றல், வழிகாட்டிகள், பயணம் அல்லது மாறுபட்ட கருத்துகளை அறிதல் மூலம் உங்கள் வாய்ப்புகளை விரிவுபடுத்துங்கள்.',
+  10:'நோக்கங்களைத் தெளிவான பொறுப்புகளாக மாற்றுங்கள். இலக்கை நிர்ணயித்து, திறனை வளர்த்து, தொடர்ச்சியான உழைப்பின் மூலம் உங்கள் திறமையை வெளிப்படுத்துங்கள்.',
+  11:'ஆதரவான தொடர்புகளையும் நீண்டகாலத் திட்டங்களையும் வளர்த்துக்கொள்ளுங்கள். உடனடி முடிவுகளை எதிர்பார்க்காமல் முன்னேற்றத்தைத் தொடர்ந்து மதிப்பிடுங்கள்.',
+  12:'சிந்தனைக்கும் ஓய்வுக்கும் நேரம் ஒதுக்குங்கள். மறைந்த செலவுகளைச் சரிபார்த்து, அளவுக்கு மீறிய பொறுப்புகளைத் தவிர்த்து, முக்கியமானவற்றுக்கு முன்னுரிமை கொடுங்கள்.'
+ }
+};
+const TOPIC_ACTION = {
+ en:{
+  overall:'For your overall direction, choose one or two priorities and align your weekly time with them.',
+  personality:'For personal growth, practise expressing your ideas clearly and use your natural interests in a consistent way.',
+  marriage:'In relationships, discuss expectations about commitment, family, money and personal space early and respectfully.',
+  career:'At work, identify the skill or responsibility that would make the biggest difference and make a practical plan to strengthen it.',
+  finance:'With money, track income and spending, protect emergency savings and assess risk before making commitments.',
+  education:'For learning, choose a specific subject or qualification and follow a steady study plan with measurable milestones.',
+  family:'At home, make responsibilities explicit and create regular time for honest, calm conversations.',
+  children:'For creativity and family planning, focus on patient support, learning and open conversations; seek professional guidance for medical questions.',
+  wellbeing:'For daily balance, review sleep, workload, movement and stress; seek qualified care for health concerns.',
+  travel:'For travel or overseas plans, compare costs, documentation, work or study options and family commitments before deciding.',
+  property:'For property matters, check affordability, title, approvals and long-term maintenance before making a commitment.',
+  spirituality:'For inner growth, choose a practice you can sustain and make time for reflection, study or service.'
+ },
+ ta:{
+  overall:'உங்கள் வாழ்க்கைப் பாதைக்காக ஒன்று அல்லது இரண்டு முக்கிய இலக்குகளைத் தேர்ந்தெடுத்து, வாரந்தோறும் அவற்றுக்கான நேரத்தை ஒதுக்குங்கள்.',
+  personality:'தனிப்பட்ட வளர்ச்சிக்காக உங்கள் கருத்துகளைத் தெளிவாக வெளிப்படுத்தப் பயிற்சி செய்யுங்கள்; உங்களுக்கு இயல்பாக விருப்பமான திறன்களைத் தொடர்ந்து வளர்த்துக்கொள்ளுங்கள்.',
+  marriage:'உறவுகளில் திருமண உறுதி, குடும்பம், பணம் மற்றும் தனிப்பட்ட இடம் குறித்த எதிர்பார்ப்புகளை ஆரம்பத்திலேயே மரியாதையுடன் பேசித் தெளிவுபடுத்துங்கள்.',
+  career:'பணியில் அதிக மாற்றத்தை ஏற்படுத்தக்கூடிய ஒரு திறன் அல்லது பொறுப்பைக் கண்டறிந்து, அதை மேம்படுத்த நடைமுறைத் திட்டம் அமைக்குங்கள்.',
+  finance:'வருமானம் மற்றும் செலவுகளைப் பதிவு செய்யுங்கள்; அவசரச் சேமிப்பை பாதுகாத்து, நிதி முடிவுகளுக்கு முன் அபாயங்களை மதிப்பிடுங்கள்.',
+  education:'கல்விக்காக ஒரு குறிப்பிட்ட பாடம் அல்லது தகுதியைத் தேர்ந்தெடுத்து, அளவிடக்கூடிய இலக்குகளுடன் தொடர்ந்து படிக்கும் திட்டத்தைப் பின்பற்றுங்கள்.',
+  family:'குடும்பத்தில் ஒவ்வொருவரின் பொறுப்புகளையும் தெளிவுபடுத்தி, அமைதியான நேரத்தில் மனம் திறந்து பேசும் பழக்கத்தை உருவாக்குங்கள்.',
+  children:'படைப்பாற்றல் மற்றும் குடும்பத் திட்டமிடலில் பொறுமை, ஆதரவு மற்றும் திறந்த உரையாடலுக்கு முக்கியத்துவம் கொடுங்கள்; மருத்துவக் கேள்விகளுக்கு நிபுணர் ஆலோசனை பெறுங்கள்.',
+  wellbeing:'உறக்கம், வேலைச்சுமை, உடற்பயிற்சி மற்றும் மனஅழுத்தத்தை மதிப்பாய்வு செய்யுங்கள்; உடல்நலக் கவலைகளுக்கு தகுதியான மருத்துவ உதவியை நாடுங்கள்.',
+  travel:'பயணம் அல்லது வெளிநாட்டுத் திட்டங்களுக்கு முன் செலவு, ஆவணங்கள், வேலை அல்லது கல்வி வாய்ப்புகள் மற்றும் குடும்பப் பொறுப்புகளை ஒப்பிட்டுப் பாருங்கள்.',
+  property:'சொத்து முடிவுக்கு முன் செலவுத்திறன், உரிமைப் பத்திரம், அனுமதிகள் மற்றும் நீண்டகால பராமரிப்புச் செலவுகளைச் சரிபாருங்கள்.',
+  spirituality:'தொடர்ந்து கடைப்பிடிக்கக்கூடிய ஆன்மிகப் பயிற்சியைத் தேர்ந்தெடுத்து, சிந்தனை, படிப்பு அல்லது சேவைக்காக நேரம் ஒதுக்குங்கள்.'
+ }
+};
+function practicalGuidance(topic,data,asc,lang,planetName){
+ const primary=topic.houses[0], sign=(asc+primary-1)%12, lord=SIGN_LORDS[sign];
+ const p=data.planets.find(x=>x.name===lord);
+ if(!p)return lang==='ta'?TOPIC_ACTION.ta[topic.id]:TOPIC_ACTION.en[topic.id];
+ const signOfPlanet=Math.floor(((p.longitude%360)+360)%360/30);
+ const placedHouse=(signOfPlanet-asc+12)%12+1;
+ const name=planetName(lord);
+ if(lang==='ta'){
+  return `இந்தத் துறையின் முக்கியமான ${primary}ஆம் பாவ அதிபதி ${name}, உங்கள் ${placedHouse}ஆம் பாவத்தில் உள்ளது. அதனால் இந்த விஷயத்தில் ${HOUSE_MEANING.ta[placedHouse]} ஆகியவை முக்கியமாக இணைகின்றன. ${PRACTICAL_ACTIONS.ta[placedHouse]} ${TOPIC_ACTION.ta[topic.id]}`;
+ }
+ return `The ruler of the key ${ordinal(primary)} house for this area, ${name}, is placed in your ${ordinal(placedHouse)} house. This connects it with ${HOUSE_MEANING.en[placedHouse]}. ${PRACTICAL_ACTIONS.en[placedHouse]} ${TOPIC_ACTION.en[topic.id]}`;
+}
+
 export function renderDetailedPredictions(data, asc, lang, names, planetName) {
   const t = WORDS[lang];
   const current = data.dasha.current;
@@ -184,7 +258,7 @@ export function renderDetailedPredictions(data, asc, lang, names, planetName) {
   const cards = TOPICS.map((topic, index) => {
     const details = topic.houses.slice(0,3).map(h => placementInsight(h, data, asc, lang, planetName)).filter(Boolean);
     const evidence = topic.houses.slice(0,3).map(h => chartEvidence(h, data, asc, lang, names, planetName));
-    const advice = lang === 'ta' ? topic.adviceTa : topic.adviceEn;
+    const advice = practicalGuidance(topic, data, asc, lang, planetName);
     const title = lang === 'ta' ? topic.ta : topic.en;
     const focus = TOPIC_FOCUS[lang][topic.id];
     const insightLabel = lang === 'ta' ? 'உங்கள் ஜாதகத்தின் தனிப்பட்ட விளக்கம்' : 'What this means in your chart';
