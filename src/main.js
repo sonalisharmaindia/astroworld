@@ -197,6 +197,10 @@ async function calculate(date,time,timezone,lat,lon){
     throw new Error('Moon position could not be calculated');
   }
 
+  const transitDate = new Date();
+  const transitJd = transitDate.getTime() / 86400000 + 2440587.5;
+  const transitPlanets = getPlanetPositions(transitDate, transitJd);
+
   return {
     person: $('fullName').value.trim(),
     date,
@@ -207,6 +211,8 @@ async function calculate(date,time,timezone,lat,lon){
       longitude: lagnaLongitude
     },
     planets: planetList,
+    transits: transitPlanets,
+    transitDate,
     dasha: dashaSchedule(moon.longitude,birthUtc)
   };
 }
