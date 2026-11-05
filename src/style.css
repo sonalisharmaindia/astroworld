@@ -249,3 +249,20 @@ td{color:#463d4b}
  .pdf-body .highlight-symbol{display:none}
  .pdf-body .highlight-takeaway{padding:4mm}
 }
+
+
+/* Keep the interpretation prominent; make technical chart evidence optional */
+.personalised-reading{margin-top:14px}
+.personalised-reading ul{padding-left:19px;margin:8px 0 0}
+.personalised-reading li{font-size:13px;line-height:1.85;margin-bottom:9px;color:#44394d}
+.chart-evidence{margin-top:14px;border-top:1px solid #e8dcc9;padding-top:10px}
+.chart-evidence summary{cursor:pointer;list-style:none;color:#94713d;font:700 9px/1.5 Arial,sans-serif;letter-spacing:1.15px;text-transform:uppercase}
+.chart-evidence summary::-webkit-details-marker{display:none}
+.chart-evidence summary:after{content:'＋';float:right;font-size:13px}
+.chart-evidence[open] summary:after{content:'−'}
+.chart-evidence ul{padding-left:18px;margin:10px 0 0}
+.chart-evidence li{font-size:10px;line-height:1.65;color:#756b78;margin-bottom:5px}
+@media print{
+ .pdf-body .chart-evidence{display:none!important}
+ .pdf-body .personalised-reading li{font-size:10pt;line-height:1.7}
+}
