@@ -60,6 +60,27 @@ function siderealLongitude(body, date, jd) {
   );
 }
 
+const TRANSIT_BODIES = { Jupiter: Astronomy.Body.Jupiter, Saturn: Astronomy.Body.Saturn };
+function siderealPlanetLongitude(name, date) { const jd=date.getTime()/86400000+2440587.5; return siderealLongitude(TRANSIT_BODIES[name],date,jd); }
+function signedAngle(delta) { return ((delta + 540) % 360) - 180; }
+function transitSpeed(name,date) { const h=21600000; return signedAngle(siderealPlanetLongitude(name,new Date(date.getTime()+h))-siderealPlanetLongitude(name,new Date(date.getTime()-h)))/0.5; }
+function refineTransitRoot(fn,left,right,rising) { let a=left.getTime(),b=right.getTime(); for(let i=0;i<36;i++){const m=(a+b)/2,v=fn(new Date(m));if((rising&&v>=0)||(!rising&&v<=0))b=m;else a=m;} return new Date((a+b)/2); }
+function buildTransitCalendar(startDate,endDate) {
+ const events=[],day=86400000;
+ for(const name of Object.keys(TRANSIT_BODIES)){
+  let prevDate=new Date(startDate),prevLon=siderealPlanetLongitude(name,prevDate),prevSpeed=transitSpeed(name,prevDate),unwrapped=prevLon;
+  for(let time=prevDate.getTime()+day;time<=endDate.getTime()+day;time+=day){
+   const date=new Date(Math.min(time,endDate.getTime())),lon=siderealPlanetLongitude(name,date),delta=signedAngle(lon-prevLon),next=unwrapped+delta;
+   if(delta!==0){const low=Math.min(unwrapped,next),high=Math.max(unwrapped,next),first=Math.floor(low/30)+1,last=Math.floor(high/30);for(let k=first;k<=last;k++){const boundary=k*30,increasing=delta>0;const root=refineTransitRoot(d=>prevLon+signedAngle(siderealPlanetLongitude(name,d)-prevLon)-boundary,prevDate,date,increasing);events.push({planet:name,type:'ingress',longitude:((boundary%360)+360)%360,date:root,direction:increasing?'direct':'retrograde'});}}
+   const speed=transitSpeed(name,date);
+   if(prevSpeed>0&&speed<=0){const root=refineTransitRoot(d=>transitSpeed(name,d),prevDate,date,false);events.push({planet:name,type:'station',station:'retrograde',date:root});}
+   else if(prevSpeed<0&&speed>=0){const root=refineTransitRoot(d=>transitSpeed(name,d),prevDate,date,true);events.push({planet:name,type:'station',station:'direct',date:root});}
+   unwrapped=next;prevLon=lon;prevSpeed=speed;prevDate=date;if(date.getTime()===endDate.getTime())break;
+  }
+ }
+ return events.sort((a,b)=>a.date-b.date);
+}
+
 function getPlanetPositions(date, jd) {
   const bodies = [
     ['Sun', Astronomy.Body.Sun],
@@ -204,6 +225,7 @@ async function calculate(date,time,timezone,lat,lon){
   const forecast = [];
   const horizon = new Date(transitDate);
   horizon.setFullYear(horizon.getFullYear()+5);
+  const transitEvents = buildTransitCalendar(transitDate, horizon);
   for(let year=transitDate.getFullYear();year<=horizon.getFullYear();year++){
     const samples=[];
     for(let month=0;month<12;month++){
@@ -234,7 +256,8 @@ async function calculate(date,time,timezone,lat,lon){
     transits: transitPlanets,
     transitDate,
     dasha,
-    forecast
+    forecast,
+    transitEvents
   };
 }
 $('year').textContent=new Date().getFullYear();
