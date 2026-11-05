@@ -220,3 +220,32 @@ td{color:#463d4b}
   .pdf-body .dasha-summary-card{display:none}
   .pdf-body .detailed-card{padding-left:5mm}
 }
+
+
+/* Personal chart insights: strengths, growth and care */
+.personal-highlights{grid-column:1/-1;margin:8px 0 18px}
+.highlights-intro{font-size:13px;line-height:1.8;color:#62586a;margin:0 0 14px;padding:0 2px;max-width:980px}
+.highlight-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.highlight-card{position:relative;border:1px solid #dfd0b5;border-radius:15px;padding:18px 18px 16px;background:linear-gradient(145deg,#fffdf8,#f8f1e5);min-width:0;box-shadow:0 8px 24px #3d2d1808}
+.highlight-card h4{font:600 17px/1.35 Georgia,serif;color:#46354e;margin:8px 0 12px}
+.highlight-card ul{padding-left:18px;margin:0 0 12px}
+.highlight-card li{font-size:12px;line-height:1.75;color:#51475b;margin-bottom:6px}
+.highlight-card p{font-size:11px;line-height:1.7;color:#786b70;border-top:1px solid #e7dcc8;padding-top:10px;margin:10px 0 0}
+.highlight-symbol{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:50%;background:#eee1c7;color:#8b6b3e;font-size:17px}
+.highlight-strength{border-top:3px solid #b38c4b}
+.highlight-growth{border-top:3px solid #8b9a78}
+.highlight-care{border-top:3px solid #aa8b98}
+.highlight-takeaway{margin-top:13px;padding:14px 17px;border-left:3px solid #b18b4d;background:#f4ecdf;border-radius:0 10px 10px 0}
+.highlight-takeaway strong{font:700 10px Arial,sans-serif;letter-spacing:1.2px;text-transform:uppercase;color:#896637}
+.highlight-takeaway p{font-size:12px;line-height:1.75;color:#594e5d;margin:5px 0 0}
+@media(max-width:800px){.highlight-grid{grid-template-columns:1fr}.highlight-card{padding:16px}}
+@media print{
+ .pdf-body .personal-highlights{margin:0}
+ .pdf-body .highlights-intro{font-size:9pt;line-height:1.6}
+ .pdf-body .highlight-grid{grid-template-columns:1fr;gap:4mm}
+ .pdf-body .highlight-card{padding:4mm 5mm;border-radius:2mm;box-shadow:none;break-inside:avoid}
+ .pdf-body .highlight-card h4{font-size:13pt;margin:2mm 0}
+ .pdf-body .highlight-card li,.pdf-body .highlight-card p{font-size:8.5pt;line-height:1.5}
+ .pdf-body .highlight-symbol{display:none}
+ .pdf-body .highlight-takeaway{padding:4mm}
+}
