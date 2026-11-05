@@ -69,9 +69,14 @@ const TOPICS = [
 ];
 
 const WORDS = {
-  en:{houses:'Houses considered', key:'Chart factors', reading:'Traditional interpretation', reflection:'Practical reflection', sign:'sign', house:'house', lord:'lord', occupied:'occupied by', noOccupants:'No classical planet is placed in this house in the current chart.', placedIn:'is placed in', currentPeriod:'Current Vimshottari period', antar:'Antardasha', notCalculated:'Timing is not assessed in this thematic section.'},
-  ta:{houses:'பரிசீலிக்கப்பட்ட பாவங்கள்',key:'ஜாதகக் காரணிகள்',reading:'பாரம்பரிய விளக்கம்',reflection:'நடைமுறைச் சிந்தனை',sign:'ராசி',house:'ஆம் பாவம்',lord:'அதிபதி',occupied:'இருப்பவை',noOccupants:'இந்த ஜாதகத்தில் இந்தப் பாவத்தில் முக்கிய கிரகம் எதுவும் இல்லை.',placedIn:'இருப்பது',currentPeriod:'நடப்பு விம்சோத்தரி காலம்',antar:'அந்தர்தசை',notCalculated:'இந்தத் தலைப்பில் காலக் கணிப்பு செய்யப்படவில்லை.'}
+  en:{key:'What your chart shows',reading:'How to understand this',reflection:'A practical takeaway',house:'house',lord:'ruler',occupied:'Planets placed here',noOccupants:'No classical planet occupies this house. That does not make the house inactive; its ruler still matters.',currentPeriod:'Your current major period',antar:'sub-period',periodTitle:'Your current planetary period',periodIntro:'In the Vimshottari system, this is the major and sub-period active on today’s date. Traditional astrology uses these cycles as timing context, not as a guarantee that a particular event will happen.'},
+  ta:{key:'உங்கள் ஜாதகம் காட்டுவது',reading:'இதன் பொருள்',reflection:'நடைமுறை வழிகாட்டல்',house:'ஆம் பாவம்',lord:'அதிபதி',occupied:'இந்தப் பாவத்தில் உள்ள கிரகங்கள்',noOccupants:'இந்தப் பாவத்தில் முக்கிய கிரகம் இல்லை. அதனால் இந்தப் பாவம் செயலற்றது என்று பொருள் அல்ல; அதன் அதிபதியும் முக்கியமானவர்.',currentPeriod:'உங்கள் நடப்பு மகாதசை',antar:'அந்தர்தசை',periodTitle:'உங்கள் நடப்பு கிரகக் காலம்',periodIntro:'விம்சோத்தரி முறையில், இன்றைய தேதியில் செயல்படும் மகாதசை மற்றும் அந்தர்தசை இதுவாகும். பாரம்பரிய ஜோதிடத்தில் இவை காலச் சூழலாகப் பார்க்கப்படுகின்றன; குறிப்பிட்ட நிகழ்வு நிச்சயம் நடக்கும் என்பதற்கான உறுதி அல்ல.'}
 };
+
+function ordinal(n) {
+  if (n >= 11 && n <= 13) return `${n}th`;
+  return `${n}${({1:'st',2:'nd',3:'rd'})[n%10]||'th'}`;
+}
 
 function houseDetails(house, data, asc, lang, names, planetName) {
   const sign = (asc + house - 1) % 12;
@@ -81,12 +86,14 @@ function houseDetails(house, data, asc, lang, names, planetName) {
   const occupants = data.planets.filter(p => (Math.floor(((p.longitude % 360) + 360) % 360 / 30) - asc + 12) % 12 + 1 === house);
   const t = WORDS[lang];
   const signName = names[lang].signs[sign];
-  const lordText = lordPlanet ? `${planetName(lord)} — ${names[lang].signs[Math.floor(lordPlanet.longitude / 30)]}, ${lordHouse}${t.house}` : planetName(lord);
+  const lordSign = lordPlanet ? names[lang].signs[Math.floor(((lordPlanet.longitude % 360) + 360) % 360 / 30)] : '';
+  const lordText = lordPlanet
+    ? (lang === 'ta' ? `${planetName(lord)} ${lordSign} ராசியில் ${lordHouse}ஆம் பாவத்தில் உள்ளது` : `${planetName(lord)} is in ${lordSign}, your ${ordinal(lordHouse)} house`)
+    : planetName(lord);
   const occupantText = occupants.length ? occupants.map(p => planetName(p.name)).join(', ') : t.noOccupants;
-  return {
-    house,
-    text: `${house}${t.house} (${signName}) · ${t.lord}: ${lordText} · ${t.occupied}: ${occupantText}`
-  };
+  return lang === 'ta'
+    ? `உங்கள் ${house}ஆம் பாவம் ${signName} ராசியில் உள்ளது. இதன் அதிபதி ${lordText}. ${t.occupied}: ${occupantText}`
+    : `Your ${ordinal(house)} house falls in ${signName}. Its ruler is ${lordText}. ${t.occupied}: ${occupantText}`;
 }
 
 export function renderDetailedPredictions(data, asc, lang, names, planetName) {
@@ -94,23 +101,27 @@ export function renderDetailedPredictions(data, asc, lang, names, planetName) {
   const current = data.dasha.current;
   const now = new Date();
   const activeAntar = current.subs.find(p => now >= p.start && now < p.end);
-  const dashaLine = `${t.currentPeriod}: ${names[lang].dashaLords[DASHA_ORDER.indexOf(current.lord)]}${activeAntar ? ` · ${t.antar}: ${names[lang].dashaLords[DASHA_ORDER.indexOf(activeAntar.lord)]}` : ''} (${fmt(current.start, lang)} – ${fmt(current.end, lang)})`;
+  const dashaLord = names[lang].dashaLords[DASHA_ORDER.indexOf(current.lord)];
+  const antarLord = activeAntar ? names[lang].dashaLords[DASHA_ORDER.indexOf(activeAntar.lord)] : '';
+  const dashaLine = lang === 'ta'
+    ? `${dashaLord} மகாதசை${activeAntar ? ` · ${antarLord} அந்தர்தசை` : ''} · ${fmt(current.start,lang)} – ${fmt(current.end,lang)}`
+    : `${dashaLord} Mahadasha${activeAntar ? ` · ${antarLord} Antardasha` : ''} · ${fmt(current.start,lang)} – ${fmt(current.end,lang)}`;
 
-  return TOPICS.map(topic => {
+  const timing = `<article class="dasha-summary-card"><div class="dasha-summary-icon">✧</div><div><div class="dasha-summary-kicker">${t.periodTitle}</div><h4>${dashaLine}</h4><p>${t.periodIntro}</p></div></article>`;
+  const cards = TOPICS.map((topic, index) => {
     const details = topic.houses.map(h => houseDetails(h, data, asc, lang, names, planetName));
-    const labels = topic.houses.join(', ');
     const meaning = lang === 'ta' ? topic.meaningTa : topic.meaningEn;
     const advice = lang === 'ta' ? topic.adviceTa : topic.adviceEn;
     const title = lang === 'ta' ? topic.ta : topic.en;
     return `<article class="life-card detailed-card">
-      <div class="prediction-number">${String(TOPICS.indexOf(topic)+1).padStart(2,'0')}</div>
+      <div class="prediction-number">${String(index+1).padStart(2,'0')}</div>
       <h4>${title}</h4>
       <p class="prediction-summary">${meaning}</p>
-      <div class="prediction-block"><strong>${t.key}</strong><ul>${details.map(d => `<li>${d.text}</li>`).join('')}</ul></div>
+      <div class="prediction-block"><strong>${t.key}</strong><ul>${details.map(d => `<li>${d}</li>`).join('')}</ul></div>
       <div class="prediction-block"><strong>${t.reading}</strong><p>${advice}</p></div>
-      <p class="prediction-period"><strong>${dashaLine}</strong></p>
     </article>`;
   }).join('');
+  return timing + cards;
 }
 
 function fmt(date, lang) {
