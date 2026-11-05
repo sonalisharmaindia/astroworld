@@ -300,3 +300,6 @@ td{color:#463d4b}
  .pdf-body .forecast-year li{font-size:8pt;line-height:1.4}
  .pdf-body .forecast-intro,.pdf-body .forecast-periods,.pdf-body .forecast-transits{font-size:7.5pt}
 }
+
+/* Exact-date Jupiter and Saturn transit calendar */
+.transit-calendar-card{grid-column:1/-1;margin:12px 0 18px;padding:22px 24px;border:1px solid #ddc99f;border-radius:16px;background:linear-gradient(145deg,#fffdf8,#f6eddf);box-shadow:0 8px 24px #3d2d1808}.transit-event-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 20px}.transit-event{display:grid;grid-template-columns:132px 78px 1fr;gap:9px;align-items:center;padding:11px 0;border-bottom:1px solid #eadfce}.transit-event time{font:11px Arial,sans-serif;color:#756a73}.transit-event strong{font:700 11px Arial,sans-serif;color:#493750}.transit-event span{font-size:11px;line-height:1.5;color:#5e5362}@media(max-width:800px){.transit-event-list{grid-template-columns:1fr}.transit-event{grid-template-columns:112px 64px 1fr;gap:7px}.transit-calendar-card{padding:17px}}@media print{.pdf-body .transit-calendar-card{box-shadow:none;padding:3mm;margin:0}.pdf-body .transit-event-list{grid-template-columns:1fr 1fr;gap:0 4mm}.pdf-body .transit-event{grid-template-columns:27mm 15mm 1fr;gap:2mm;padding:2mm 0}.pdf-body .transit-event time,.pdf-body .transit-event strong,.pdf-body .transit-event span{font-size:7pt}}
