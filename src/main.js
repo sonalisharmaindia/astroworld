@@ -71,7 +71,7 @@ function buildTransitCalendar(startDate,endDate) {
   let prevDate=new Date(startDate),prevLon=siderealPlanetLongitude(name,prevDate),prevSpeed=transitSpeed(name,prevDate),unwrapped=prevLon;
   for(let time=prevDate.getTime()+day;time<=endDate.getTime()+day;time+=day){
    const date=new Date(Math.min(time,endDate.getTime())),lon=siderealPlanetLongitude(name,date),delta=signedAngle(lon-prevLon),next=unwrapped+delta;
-   if(delta!==0){const low=Math.min(unwrapped,next),high=Math.max(unwrapped,next),first=Math.floor(low/30)+1,last=Math.floor(high/30);for(let k=first;k<=last;k++){const boundary=k*30,increasing=delta>0;const root=refineTransitRoot(d=>prevLon+signedAngle(siderealPlanetLongitude(name,d)-prevLon)-boundary,prevDate,date,increasing);events.push({planet:name,type:'ingress',longitude:((boundary%360)+360)%360,date:root,direction:increasing?'direct':'retrograde'});}}
+   if(delta!==0){const low=Math.min(unwrapped,next),high=Math.max(unwrapped,next),first=Math.floor(low/30)+1,last=Math.floor(high/30);for(let k=first;k<=last;k++){const boundary=k*30,increasing=delta>0;const target=((boundary%360)+360)%360,targetUnwrapped=prevLon+signedAngle(target-prevLon);const root=refineTransitRoot(d=>prevLon+signedAngle(siderealPlanetLongitude(name,d)-prevLon)-targetUnwrapped,prevDate,date,increasing);events.push({planet:name,type:'ingress',longitude:((boundary%360)+360)%360,date:root,direction:increasing?'direct':'retrograde'});}}
    const speed=transitSpeed(name,date);
    if(prevSpeed>0&&speed<=0){const root=refineTransitRoot(d=>transitSpeed(name,d),prevDate,date,false);events.push({planet:name,type:'station',station:'retrograde',date:root});}
    else if(prevSpeed<0&&speed>=0){const root=refineTransitRoot(d=>transitSpeed(name,d),prevDate,date,true);events.push({planet:name,type:'station',station:'direct',date:root});}
@@ -311,6 +311,7 @@ function buildPdfBook(){
   const dashaCopy=$('dashaPanel').innerHTML;
   const highlightsCopy=$('lifeReports').querySelector('.personal-highlights')?.outerHTML||'';
   const timingCopy=$('lifeReports').querySelector('.timing-insights-card')?.outerHTML||'';
+  const transitCalendarCopy=$('lifeReports').querySelector('.transit-calendar-card')?.outerHTML||'';
   const forecastCopy=$('lifeReports').querySelector('.five-year-forecast')?.outerHTML||'';
   const birthDetails=`<div class="pdf-facts"><div><small>${copy.birth}</small><strong>${esc(d.date)}</strong></div><div><small>${copy.time}</small><strong>${esc(d.time)}</strong></div><div><small>${copy.place}</small><strong>${esc(d.place)}</strong></div><div><small>${copy.tz}</small><strong>${esc(d.timezone)}</strong></div><div><small>${copy.coordinates}</small><strong>${esc($('latitude').value)}, ${esc($('longitude').value)}</strong></div></div>${summary}`;
   const contents=`<ol class="pdf-toc">${toc.map(([x,n])=>`<li><span>${esc(x)}</span><b>${n}</b></li>`).join('')}</ol>`;
@@ -324,7 +325,7 @@ function buildPdfBook(){
   pages.push(page('DIVISIONAL WISDOM',copy.nav,`<p>${copy.navExplain}</p><div class="pdf-chart">${chartCopy('navamsaChart')}</div><div class="pdf-note">${t.navamsaText}</div>`,5));
   pages.push(page('LUNAR CONSTELLATION',copy.nak,nakBody,6));
   pages.push(page('PLANETARY TIMELINE',copy.dasha,`<p>${copy.dashaExplain}</p>${dashaCopy}`,7));
-  pages.push(page('CURRENT TIMING & TRANSITS',copy.timing,timingCopy,8));
+  pages.push(page('CURRENT TIMING & TRANSITS',copy.timing,timingCopy+transitCalendarCopy,8));
   pages.push(page('FIVE-YEAR OUTLOOK',copy.forecast,forecastCopy,9));
   pages.push(page('PERSONAL CHART INSIGHTS',copy.highlights,highlightsCopy,10));
   chapters.forEach((card,i)=>pages.push(page(`${copy.chapter} ${String(i+1).padStart(2,'0')}`,chapterTitles[i],card.outerHTML,11+i)));
