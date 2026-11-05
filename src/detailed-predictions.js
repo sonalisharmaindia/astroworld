@@ -133,6 +133,42 @@ function personalHighlights(data, asc, lang, planetName) {
   </div><div class="highlight-takeaway"><strong>${w.takeaway}</strong><p>${w.takeawayText}</p></div></section>`;
 }
 
+
+const HOUSE_MEANING = {
+ en:{
+  1:'identity, confidence and the way you begin things',2:'family resources, speech and savings',3:'communication, initiative and practical skills',4:'home, emotional foundations and property',5:'creativity, learning and personal expression',6:'daily work, service and problem-solving',7:'partnerships, agreements and close relationships',8:'transformation, research and shared responsibilities',9:'higher learning, beliefs and long-distance connections',10:'career, responsibility and public contribution',11:'networks, income and long-term goals',12:'rest, reflection, expenses and distant places'
+ },
+ ta:{
+  1:'சுய அடையாளம், தன்னம்பிக்கை மற்றும் புதிய முயற்சிகள்',2:'குடும்ப வளங்கள், பேச்சு மற்றும் சேமிப்பு',3:'தொடர்பாடல், முயற்சி மற்றும் நடைமுறைத் திறன்கள்',4:'வீடு, மன அடித்தளம் மற்றும் சொத்து',5:'படைப்பாற்றல், கற்றல் மற்றும் சுய வெளிப்பாடு',6:'அன்றாட வேலை, சேவை மற்றும் பிரச்சினைகளைத் தீர்த்தல்',7:'கூட்டாண்மை, ஒப்பந்தங்கள் மற்றும் நெருங்கிய உறவுகள்',8:'மாற்றங்கள், ஆராய்ச்சி மற்றும் பகிரப்பட்ட பொறுப்புகள்',9:'உயர்கல்வி, நம்பிக்கைகள் மற்றும் தொலைதூரத் தொடர்புகள்',10:'தொழில், பொறுப்புகள் மற்றும் சமூகப் பங்களிப்பு',11:'தொடர்புகள், வருமானம் மற்றும் நீண்டகால இலக்குகள்',12:'ஓய்வு, சிந்தனை, செலவுகள் மற்றும் தொலைதூர இடங்கள்'
+ }
+};
+const TOPIC_FOCUS = {
+ en:{overall:'Your overall direction',personality:'Your self-expression',marriage:'Your close relationships',career:'Your professional life',finance:'Your financial habits',education:'Your learning journey',family:'Your family and home life',children:'Your creativity and relationship with children',wellbeing:'Your routines and personal balance',travel:'Travel and life beyond familiar surroundings',property:'Your home and assets',spirituality:'Your beliefs and inner life'},
+ ta:{overall:'உங்கள் வாழ்க்கைப் பாதை',personality:'உங்கள் சுய வெளிப்பாடு',marriage:'உங்கள் நெருங்கிய உறவுகள்',career:'உங்கள் தொழில் வாழ்க்கை',finance:'உங்கள் நிதிப் பழக்கங்கள்',education:'உங்கள் கல்விப் பயணம்',family:'உங்கள் குடும்பம் மற்றும் இல்லறம்',children:'உங்கள் படைப்பாற்றல் மற்றும் குழந்தைகள் தொடர்பான அம்சங்கள்',wellbeing:'உங்கள் அன்றாட ஒழுங்கு மற்றும் தனிப்பட்ட சமநிலை',travel:'பயணம் மற்றும் பழக்கமான சூழலுக்கு வெளியேயான வாழ்க்கை',property:'உங்கள் வீடு மற்றும் சொத்துகள்',spirituality:'உங்கள் நம்பிக்கைகள் மற்றும் உள்ளார்ந்த வாழ்க்கை'}
+};
+function placementInsight(house,data,asc,lang,planetName){
+ const sign=(asc+house-1)%12, lord=SIGN_LORDS[sign];
+ const p=data.planets.find(x=>x.name===lord);
+ if(!p)return '';
+ const pSign=Math.floor(((p.longitude%360)+360)%360/30);
+ const pHouse=(pSign-asc+12)%12+1;
+ const planet=planetName(lord);
+ const source=HOUSE_MEANING[lang][house], destination=HOUSE_MEANING[lang][pHouse];
+ return lang==='ta'
+  ? `உங்கள் ${house}ஆம் பாவத்தின் அதிபதி ${planet}, ${pHouse}ஆம் பாவத்தில் உள்ளது. இதனால் ${source} என்ற அம்சங்கள், ${destination} என்ற துறைகளுடன் தொடர்புபடுகின்றன. பாரம்பரிய ஜோதிடத்தில் இது இந்த இரண்டு வாழ்க்கைத் துறைகளும் ஒன்றோடொன்று இணைந்து செயல்படலாம் என்று விளக்கப்படுகிறது.`
+  : `Your ${ordinal(house)}-house ruler, ${planet}, is placed in your ${ordinal(pHouse)} house. This links ${source} with ${destination}. In traditional Jyotish, these two areas of life are therefore read together.`;
+}
+function chartEvidence(house,data,asc,lang,names,planetName){
+ const sign=(asc+house-1)%12, lord=SIGN_LORDS[sign];
+ const p=data.planets.find(x=>x.name===lord);
+ const occupants=data.planets.filter(x=>(Math.floor(((x.longitude%360)+360)%360/30)-asc+12)%12+1===house);
+ const signName=names[lang].signs[sign];
+ const pHouse=p? (Math.floor(((p.longitude%360)+360)%360/30)-asc+12)%12+1:null;
+ return lang==='ta'
+  ? `${house}ஆம் பாவம் ${signName} ராசியில்; அதிபதி ${planetName(lord)}${pHouse?` ${pHouse}ஆம் பாவத்தில்`:''}; பாவத்தில் உள்ள கிரகங்கள்: ${occupants.length?occupants.map(x=>planetName(x.name)).join(', '):'இல்லை'}.`
+  : `${ordinal(house)} house in ${signName}; ruler: ${planetName(lord)}${pHouse?` in the ${ordinal(pHouse)} house`:''}; occupants: ${occupants.length?occupants.map(x=>planetName(x.name)).join(', '):'none'}.`;
+}
+
 export function renderDetailedPredictions(data, asc, lang, names, planetName) {
   const t = WORDS[lang];
   const current = data.dasha.current;
@@ -146,15 +182,19 @@ export function renderDetailedPredictions(data, asc, lang, names, planetName) {
 
   const timing = `<article class="dasha-summary-card"><div class="dasha-summary-icon">✧</div><div><div class="dasha-summary-kicker">${t.periodTitle}</div><h4>${dashaLine}</h4><p>${t.periodIntro}</p></div></article>`;
   const cards = TOPICS.map((topic, index) => {
-    const details = topic.houses.map(h => houseDetails(h, data, asc, lang, names, planetName));
-    const meaning = lang === 'ta' ? topic.meaningTa : topic.meaningEn;
+    const details = topic.houses.slice(0,3).map(h => placementInsight(h, data, asc, lang, planetName)).filter(Boolean);
+    const evidence = topic.houses.slice(0,3).map(h => chartEvidence(h, data, asc, lang, names, planetName));
     const advice = lang === 'ta' ? topic.adviceTa : topic.adviceEn;
     const title = lang === 'ta' ? topic.ta : topic.en;
+    const focus = TOPIC_FOCUS[lang][topic.id];
+    const insightLabel = lang === 'ta' ? 'உங்கள் ஜாதகத்தின் தனிப்பட்ட விளக்கம்' : 'What this means in your chart';
+    const basisLabel = lang === 'ta' ? 'இந்த விளக்கத்திற்கான ஜாதக நிலைகள்' : 'Chart details behind this reading';
     return `<article class="life-card detailed-card">
       <div class="prediction-number">${String(index+1).padStart(2,'0')}</div>
       <h4>${title}</h4>
-      <p class="prediction-summary">${meaning}</p>
-      <div class="prediction-block"><strong>${t.key}</strong><ul>${details.map(d => `<li>${d}</li>`).join('')}</ul></div>
+      <p class="prediction-summary">${focus}</p>
+      <div class="prediction-block personalised-reading"><strong>${insightLabel}</strong><ul>${details.map(d => `<li>${d}</li>`).join('')}</ul></div>
+      <details class="chart-evidence"><summary>${basisLabel}</summary><ul>${evidence.map(d => `<li>${d}</li>`).join('')}</ul></details>
       <div class="prediction-block"><strong>${t.reading}</strong><p>${advice}</p></div>
     </article>`;
   }).join('');
