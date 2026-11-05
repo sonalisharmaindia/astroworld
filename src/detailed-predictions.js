@@ -280,6 +280,14 @@ function fiveYearForecast(data,asc,lang,names,planetName){
  return `<article class="five-year-forecast"><div class="dasha-summary-kicker">${title}</div><p class="forecast-intro">${intro}</p><div class="forecast-years">${rendered}</div><p class="timing-disclaimer">${caveat}</p></article>`;
 }
 
+function transitCalendar(data,lang,names,planetName){
+ const events=data.transitEvents||[],title=lang==='ta'?'குரு & சனி பெயர்ச்சி நாட்காட்டி':'Jupiter & Saturn transit calendar';
+ const intro=lang==='ta'?'லஹிரி சாயனக் கணக்கீட்டின் அடிப்படையில் ராசி நுழைவு மற்றும் வக்கிரம்/நேர்கதி தொடக்கத் தேதிகள். நேரம் உங்கள் சாதனத்தின் உள்ளூர் நேரத்தில் காட்டப்படும்.':'Calculated with AstroWorld’s existing Lahiri sidereal engine. Dates and times are shown in your device’s local time.';
+ const rows=events.map(e=>{const date=new Intl.DateTimeFormat(lang==='ta'?'ta-IN':'en-GB',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}).format(e.date),planet=planetName(e.planet);let label='';if(e.type==='ingress'){const sign=names[lang].signs[Math.floor(e.longitude/30)];label=lang==='ta'?sign+' ராசியில் நுழைவு'+(e.direction==='retrograde'?' (வக்கிர நுழைவு)':''):'Enters '+sign+(e.direction==='retrograde'?' (retrograde re-entry)':'');}else{label=lang==='ta'?(e.station==='retrograde'?'வக்கிரம் தொடக்கம்':'நேர்கதி தொடக்கம்'):(e.station==='retrograde'?'Turns retrograde':'Turns direct');}return '<div class="transit-event"><time>'+date+'</time><strong>'+planet+'</strong><span>'+label+'</span></div>';}).join('');
+ const caveat=lang==='ta'?'குறிப்பு: இவை தற்போதைய Astronomy Engine மற்றும் லஹிரி அயனாம்ச மாதிரியைப் பயன்படுத்திய கணக்கீட்டு மதிப்பீடுகள். துல்லியமான பஞ்சாங்க நேரங்களுடன் சிறிய வேறுபாடுகள் இருக்கலாம்.':'Method note: these are computed estimates from the site’s current Astronomy Engine ephemeris and Lahiri ayanamsa approximation. Small differences from specialist panchangas or higher-precision ephemerides are possible.';
+ return '<article class="transit-calendar-card"><div class="dasha-summary-kicker">'+title+'</div><p class="forecast-intro">'+intro+'</p><div class="transit-event-list">'+(rows||'<p>No events found in this period.</p>')+'</div><p class="timing-disclaimer">'+caveat+'</p></article>';
+}
+
 export function renderDetailedPredictions(data, asc, lang, names, planetName) {
   const t = WORDS[lang];
   const current = data.dasha.current;
@@ -309,7 +317,7 @@ export function renderDetailedPredictions(data, asc, lang, names, planetName) {
       <div class="prediction-block"><strong>${t.reading}</strong><p>${advice}</p></div>
     </article>`;
   }).join('');
-  return timing + dashaTransitReading(data, asc, lang, names, planetName) + fiveYearForecast(data, asc, lang, names, planetName) + personalHighlights(data, asc, lang, planetName) + cards;
+  return timing + dashaTransitReading(data, asc, lang, names, planetName) + transitCalendar(data,lang,names,planetName) + fiveYearForecast(data, asc, lang, names, planetName) + personalHighlights(data, asc, lang, planetName) + cards;
 }
 
 
