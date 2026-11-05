@@ -234,4 +234,48 @@ $('birthForm').addEventListener('submit',async e=>{
   }catch(err){console.error(err);$('engineStatus').textContent=names[lang].error+' '+(err.message||'');}
   finally{btn.disabled=false;}
 });
-$('downloadPdf').addEventListener('click',()=>window.print());
+
+function buildPdfBook(){
+  if(!lastChart) return;
+  const t=names[lang], d=lastChart, asc=Math.floor(norm(d.lagna.longitude)/30);
+  const moon=d.planets.find(p=>p.name==='Moon');
+  const nakSpan=360/27,nakIndex=Math.floor(norm(moon.longitude)/nakSpan);
+  const pada=Math.floor((norm(moon.longitude)%nakSpan)/(nakSpan/4))+1;
+  const tamil=lang==='ta';
+  const copy=tamil?{
+    label:'தனிப்பட்ட வேத ஜாதகம்',sub:'பிறப்பு ஜாதகம் · விரிவான விளக்க அறிக்கை',contents:'உள்ளடக்கம்',profile:'பிறப்பு விவரங்கள்',guide:'இந்த அறிக்கையைப் புரிந்துகொள்வது',rasi:'ராசி கட்டம் · D1',nav:'நவாம்ச கட்டம் · D9',nak:'ஜென்ம நட்சத்திரம் மற்றும் பாதம்',dasha:'விம்சோத்தரி தசை',planet:'கிரக நிலைகள்',reading:'விளக்க வழிகாட்டி',notice:'முக்கியக் குறிப்பு',chapter:'அத்தியாயம்',house:'பாவம்',sign:'ராசி',degree:'பாகை',birth:'பிறந்த விவரம்',place:'பிறந்த இடம்',time:'பிறந்த நேரம்',tz:'நேர மண்டலம்',coordinates:'ஆயத்தொலைவுகள்',lagna:'லக்னம்',moon:'சந்திர ராசி',star:'ஜென்ம நட்சத்திரம்',pada:'பாதம்',lord:'அதிபதி',balance:'பிறப்பில் மீதமுள்ள தசை',explain:'இந்தப் பகுதி ஜாதக அமைப்பை எவ்வாறு படிப்பது என்பதை விளக்குகிறது. ராசி கட்டம் கிரகங்கள் எந்த ராசியில் உள்ளன என்பதைக் காட்டுகிறது; லக்னத்திலிருந்து பாவங்களைப் பொருள் கொள்ள வேண்டும்.',navExplain:'நவாம்சம் என்பது ஒன்பதாம் பிரிவு வரைபடம். இது ராசி கட்டத்திற்குப் பதிலாக அல்ல; பாரம்பரிய ஜோதிடத்தில் கூடுதல் பார்வையாகப் பயன்படுத்தப்படுகிறது.',dashaExplain:'விம்சோத்தரி தசை என்பது சந்திரனின் பிறப்பு நட்சத்திரத்தை அடிப்படையாகக் கொண்ட பாரம்பரிய காலச் சுழற்சி. தேதிகள் கணித அட்டவணை; அவை குறிப்பிட்ட நிகழ்வுகளை உறுதி செய்யாது.',method:'கணக்கீடு மற்றும் வரம்புகள்',methodText:'இந்த அறிக்கை இணைய உலாவியில் கிடைக்கும் AstroWorld கணக்கீட்டு முறையைப் பயன்படுத்துகிறது. பிறந்த நேரம், இடம், நேர மண்டலம் மற்றும் ஆயத்தொலைவுகள் முடிவுகளைப் பாதிக்கின்றன. மென்பொருள் கணக்கீடுகள் தொழில்முறை எபிமெரிஸ் அல்லது தகுதியான ஜோதிடரின் சரிபார்ப்புக்கு மாற்றாகாது.',glossary:'சொற்களஞ்சியம்',glossText:'லக்னம்: பிறந்த நேரத்தில் கிழக்கில் உதித்த ராசி. ராசி: 12 அடிப்படை ராசிகளில் ஒன்று. பாவம்: வாழ்க்கைத் தலைப்புகளுக்கான 12 வீடுகள். நவாம்சம்: D9 பிரிவு கட்டம். நட்சத்திரம்: 27 சந்திர மண்டலங்களில் ஒன்று. மகாதசை: முக்கிய கிரக காலம். அந்தர்தசை: மகாதசைக்குள் உள்ள துணைக் காலம்.',disclaimer:'ஜோதிடம் ஒரு பாரம்பரிய நம்பிக்கை மற்றும் கலாச்சார விளக்க முறை. எதிர்கால நிகழ்வுகளை கணிக்க அறிவியல் ரீதியாக நிரூபிக்கப்படவில்லை. இந்த அறிக்கை சிந்தனை மற்றும் தகவல் நோக்கத்திற்காக மட்டுமே; மருத்துவ, சட்ட, நிதி அல்லது முக்கிய வாழ்க்கை முடிவுகளுக்கான ஆலோசனை அல்ல.',generated:'உருவாக்கப்பட்ட தேதி',page:'பக்கம்'
+  }:{
+    label:'PERSONALISED VEDIC KUNDLI',sub:'BIRTH CHART · EXTENDED INTERPRETIVE REPORT',contents:'Contents',profile:'Birth profile',guide:'How to read this report',rasi:'Rasi Chart · D1',nav:'Navamsa Chart · D9',nak:'Birth Nakshatra & Pada',dasha:'Vimshottari Dasha',planet:'Planetary positions',reading:'Reading guide',notice:'Important notice',chapter:'CHAPTER',house:'House',sign:'Sign',degree:'Longitude',birth:'Date of birth',place:'Place of birth',time:'Birth time',tz:'Time zone',coordinates:'Coordinates',lagna:'Ascendant',moon:'Moon sign',star:'Birth star',pada:'Pada',lord:'Nakshatra lord',balance:'Dasha balance at birth',explain:'This section shows the signs occupied by the planets. Interpret houses from the Ascendant; the sign occupied by a planet and the house it occupies are related but different chart factors.',navExplain:'Navamsa is the ninth divisional chart. It does not replace the Rasi chart; traditional Jyotish uses it as an additional interpretive lens.',dashaExplain:'Vimshottari Dasha is a traditional planetary-period system derived from the Moon’s birth Nakshatra. The dates are a calculated timeline, not guarantees of specific events.',method:'Calculation method & limitations',methodText:'This report uses the calculation methods currently implemented in AstroWorld and runs in your browser. Birth time, place, time zone and coordinates affect the result. Software output should be independently checked against a professional ephemeris and a qualified practitioner.',glossary:'Glossary',glossText:'Ascendant (Lagna): the sign rising in the east at birth. Rasi: one of the twelve zodiac signs. Bhava: one of twelve houses used for life themes. Navamsa: the D9 divisional chart. Nakshatra: one of 27 lunar mansions. Mahadasha: a major planetary period. Antardasha: a sub-period within a Mahadasha.',disclaimer:'Astrology is a traditional belief and cultural interpretive system. It is not scientifically established as a way to predict events. This report is for reflection and information only, not medical, legal, financial or other high-stakes advice.',generated:'Report generated',page:'Page'
+  };
+  const esc=s=>String(s??'').replace(/[&<>"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
+  const page=(eyebrow,title,body,n)=>`<article class="pdf-page"><div class="pdf-running"><span>✧ ASTROWORLD</span><span>${copy.label}</span></div><div class="pdf-kicker">${eyebrow}</div><h2>${title}</h2><div class="pdf-body">${body}</div><div class="pdf-page-no">${copy.page} · ${n}</div></article>`;
+  const chapters=[...$('lifeReports').querySelectorAll('.detailed-card')];
+  const chapterTitles=chapters.map(x=>x.querySelector('h4')?.textContent||'');
+  const toc=[
+    [copy.profile,3],[copy.guide,3],[copy.rasi,4],[copy.nav,5],[copy.nak,6],[copy.dasha,7],
+    ...chapterTitles.map((x,i)=>[x,8+i]),[copy.planet,20],[copy.method,21],[copy.notice,22]
+  ];
+  const summary=$('summary').innerHTML;
+  const chartCopy=id=>$(id).innerHTML;
+  const tableCopy=$('planetTable').innerHTML;
+  const dashaCopy=$('dashaPanel').innerHTML;
+  const birthDetails=`<div class="pdf-facts"><div><small>${copy.birth}</small><strong>${esc(d.date)}</strong></div><div><small>${copy.time}</small><strong>${esc(d.time)}</strong></div><div><small>${copy.place}</small><strong>${esc(d.place)}</strong></div><div><small>${copy.tz}</small><strong>${esc(d.timezone)}</strong></div><div><small>${copy.coordinates}</small><strong>${esc($('latitude').value)}, ${esc($('longitude').value)}</strong></div></div>${summary}`;
+  const contents=`<ol class="pdf-toc">${toc.map(([x,n])=>`<li><span>${esc(x)}</span><b>${n}</b></li>`).join('')}</ol>`;
+  const profile=`<h3>${copy.profile}</h3>${birthDetails}<h3>${copy.guide}</h3><p>${copy.explain}</p><div class="pdf-note">${copy.methodText}</div>`;
+  const nakBody=$('nakshatraPanel').innerHTML+`<p><strong>${copy.star}:</strong> ${esc(t.nak[nakIndex])} · <strong>${copy.pada}:</strong> ${pada}</p>`;
+  const pages=[];
+  pages.push(`<article class="pdf-page pdf-cover"><div class="cover-ornament">✧</div><div class="cover-brand">✧ ASTROWORLD ✧</div><div class="cover-rule"></div><div class="cover-kicker">${copy.label}</div><h1>${esc(d.person)}</h1><p class="cover-subtitle">${copy.sub}</p><div class="cover-orbit">☼　☽　✦　♃　✧</div><div class="cover-details"><span>${esc(d.date)} · ${esc(d.time)}</span><span>${esc(d.place)}</span><span>${esc(t.lagna)}: ${esc(signName(asc))}　|　${esc(t.moonSign)}: ${esc(signName(Math.floor(norm(moon.longitude)/30)))}</span></div><div class="cover-bottom">A PERSONAL GUIDE TO YOUR VEDIC BIRTH CHART<br>${copy.generated}: ${new Date().toLocaleDateString(tamil?'ta-IN':'en-GB')}</div></article>`);
+  pages.push(page('CONTENTS',copy.contents,contents,2));
+  pages.push(page('YOUR BIRTH DETAILS',copy.profile,profile,3));
+  pages.push(page('THE NATAL CHART',copy.rasi,`<p>${copy.explain}</p><div class="pdf-chart">${chartCopy('rasiChart')}</div><div class="pdf-note">${t.rasiText}</div>`,4));
+  pages.push(page('DIVISIONAL WISDOM',copy.nav,`<p>${copy.navExplain}</p><div class="pdf-chart">${chartCopy('navamsaChart')}</div><div class="pdf-note">${t.navamsaText}</div>`,5));
+  pages.push(page('LUNAR CONSTELLATION',copy.nak,nakBody,6));
+  pages.push(page('PLANETARY TIMELINE',copy.dasha,`<p>${copy.dashaExplain}</p>${dashaCopy}`,7));
+  chapters.forEach((card,i)=>pages.push(page(`${copy.chapter} ${String(i+1).padStart(2,'0')}`,chapterTitles[i],card.outerHTML,8+i)));
+  pages.push(page('GRAHA DIRECTORY',copy.planet,`${tableCopy}<div class="pdf-note">${copy.explain}</div>`,20));
+  pages.push(page('REFERENCE',copy.method,`<p>${copy.methodText}</p><h3>${copy.glossary}</h3><p>${copy.glossText}</p>`,21));
+  pages.push(page('READ WITH DISCERNMENT',copy.notice,`<div class="pdf-disclaimer">${esc(t.disclaimer)}</div><p>${copy.methodText}</p>`,22));
+  $('pdfBook').innerHTML=pages.join('');
+}
+
+$('downloadPdf').addEventListener('click',()=>{buildPdfBook();window.print();});
