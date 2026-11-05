@@ -96,6 +96,43 @@ function houseDetails(house, data, asc, lang, names, planetName) {
     : `Your ${ordinal(house)} house falls in ${signName}. Its ruler is ${lordText}. ${t.occupied}: ${occupantText}`;
 }
 
+
+const PLANET_EXALTATION = {Sun:0,Moon:1,Mars:9,Mercury:5,Jupiter:3,Venus:11,Saturn:6};
+const PLANET_DEBILITATION = {Sun:6,Moon:7,Mars:3,Mercury:11,Jupiter:9,Venus:5,Saturn:0};
+const BENEFIC_TONE = new Set(['Jupiter','Venus','Mercury','Moon']);
+const HOUSE_THEME = {
+  en:{strength:'Your chart highlights',opportunity:'Areas to develop',attention:'Areas needing care',intro:'This personalised overview is drawn from the planetary signs and houses in your Rasi chart. It uses a small set of transparent traditional indicators; it is not a complete Shadbala or yoga assessment.',strong:'A planet in its exaltation or own sign is traditionally treated as having added dignity.',angle:'A planet in a kendra (1, 4, 7 or 10) or trikona (1, 5 or 9) is traditionally given added prominence.',growth:'The 3rd, 6th, 10th and 11th are upachaya houses, often interpreted as areas that can develop through effort and time.',caution:'Debilitation or placement in the 6th, 8th or 12th can indicate themes that may call for patience and conscious effort; it does not mean failure.',empty:'Your current chart does not show a clear standout by this limited dignity check. Review the full chart and divisional charts for a broader reading.',takeaway:'Practical reflection',takeawayText:'Use these themes as prompts for reflection. Your choices, skills, relationships, circumstances and opportunities remain central to what happens in life.'},
+  ta:{strength:'உங்கள் ஜாதகத்தில் வெளிப்படும் பலங்கள்',opportunity:'வளர்த்துக்கொள்ளக்கூடிய துறைகள்',attention:'கூடுதல் கவனம் தேவைப்படும் அம்சங்கள்',intro:'இந்தத் தனிப்பட்ட சுருக்கம் உங்கள் ராசி ஜாதகத்தில் உள்ள கிரக ராசி மற்றும் பாவ நிலைகளை அடிப்படையாகக் கொண்டது. சில பாரம்பரியக் குறியீடுகள் மட்டுமே பயன்படுத்தப்பட்டுள்ளன; இது முழுமையான ஷட்பலம் அல்லது யோக மதிப்பீடு அல்ல.',strong:'உச்சம் அல்லது சொந்த ராசியில் உள்ள கிரகம் பாரம்பரியமாக கூடுதல் பலம் கொண்டதாகக் கருதப்படுகிறது.',angle:'கேந்திர (1, 4, 7, 10) அல்லது திரிகோண (1, 5, 9) பாவத்தில் உள்ள கிரகத்திற்கு பாரம்பரியமாக கூடுதல் முக்கியத்துவம் அளிக்கப்படுகிறது.',growth:'3, 6, 10, 11ஆம் பாவங்கள் உபசய பாவங்கள். முயற்சி மற்றும் காலப்போக்கில் வளரக்கூடிய துறைகளாக இவை விளக்கப்படுகின்றன.',caution:'நீச ராசி அல்லது 6, 8, 12ஆம் பாவ நிலைகள் பொறுமை மற்றும் விழிப்புணர்வு தேவைப்படும் அம்சங்களைக் குறிக்கலாம்; இவை தோல்வியைக் குறிக்காது.',empty:'இந்த வரையறுக்கப்பட்ட பல மதிப்பீட்டில் தெளிவான முன்னிலை எதுவும் தெரியவில்லை. முழுமையான பார்வைக்கு மற்ற ஜாதக அம்சங்களையும் பிரிவு ஜாதகங்களையும் பரிசீலிக்க வேண்டும்.',takeaway:'நடைமுறை சிந்தனை',takeawayText:'இந்த அம்சங்களை சுயபரிசீலனைக்கான வழிகாட்டியாகப் பயன்படுத்துங்கள். வாழ்க்கை முடிவுகளில் உங்கள் தேர்வுகள், திறன்கள், உறவுகள், சூழ்நிலைகள் மற்றும் வாய்ப்புகளே முக்கியமானவை.'}
+};
+function personalHighlights(data, asc, lang, planetName) {
+  const w=HOUSE_THEME[lang];
+  const planets=data.planets.filter(p=>Object.prototype.hasOwnProperty.call(PLANET_EXALTATION,p.name));
+  const rows=planets.map(p=>{
+    const sign=Math.floor(((p.longitude%360)+360)%360/30);
+    const house=(sign-asc+12)%12+1;
+    const dignity=sign===PLANET_EXALTATION[p.name]?'exalted':sign===PLANET_DEBILITATION[p.name]?'debilitated':SIGN_LORDS[sign]===p.name?'own':'ordinary';
+    let score=dignity==='exalted'?3:dignity==='own'?2:dignity==='debilitated'?-2:0;
+    if([1,4,7,10].includes(house))score+=1;
+    if([1,5,9].includes(house))score+=1;
+    return {name:planetName(p.name),house,dignity,score,benefic:BENEFIC_TONE.has(p.name)};
+  });
+  const best=[...rows].filter(x=>x.score>=2).sort((a,b)=>b.score-a.score).slice(0,3);
+  const weak=[...rows].filter(x=>x.score<0).sort((a,b)=>a.score-b.score).slice(0,3);
+  const growth=[...rows].filter(x=>[3,6,10,11].includes(x.house)).sort((a,b)=>b.score-a.score).slice(0,3);
+  const desc=(x)=>{
+    const dign=lang==='ta'?(x.dignity==='exalted'?'உச்ச ராசி':x.dignity==='own'?'சொந்த ராசி':x.dignity==='debilitated'?'நீச ராசி':'சாதாரண ராசி'):(x.dignity==='exalted'?'exalted sign':x.dignity==='own'?'own sign':x.dignity==='debilitated'?'debilitated sign':'ordinary sign');
+    return lang==='ta'? `${x.name}: ${x.house}ஆம் பாவத்தில், ${dign}`:`${x.name}: ${ordinal(x.house)} house, ${dign}`;
+  };
+  const list=(arr,empty)=>arr.length?arr.map(x=>`<li>${desc(x)}</li>`).join(''):`<li>${empty}</li>`;
+  const growthText=lang==='ta'?'இந்த கிரகம் முயற்சியால் வளரக்கூடிய பாவத்தில் உள்ளது.':'This planet occupies an upachaya house, traditionally associated with development through effort.';
+  const weakText=lang==='ta'?'இந்த நிலை பொறுமை மற்றும் விழிப்புணர்வுடன் அணுக வேண்டிய பாரம்பரியக் குறியீடு.':'This is a traditional cue to approach the related themes with patience and awareness.';
+  return `<section class="personal-highlights"><div class="highlights-intro">${w.intro}</div><div class="highlight-grid">
+    <article class="highlight-card highlight-strength"><span class="highlight-symbol">✦</span><h4>${w.strength}</h4><ul>${list(best,w.empty)}</ul><p>${w.strong}</p></article>
+    <article class="highlight-card highlight-growth"><span class="highlight-symbol">↗</span><h4>${w.opportunity}</h4><ul>${list(growth,w.empty)}</ul><p>${growth.length?growthText:w.empty}</p></article>
+    <article class="highlight-card highlight-care"><span class="highlight-symbol">✧</span><h4>${w.attention}</h4><ul>${list(weak,lang==='ta'?'இந்த வரையறுக்கப்பட்ட மதிப்பீட்டில் குறிப்பிடத்தக்க நீச நிலை இல்லை.':'No notable debilitation appears in this limited check.')}</ul><p>${weak.length?weakText:w.caution}</p></article>
+  </div><div class="highlight-takeaway"><strong>${w.takeaway}</strong><p>${w.takeawayText}</p></div></section>`;
+}
+
 export function renderDetailedPredictions(data, asc, lang, names, planetName) {
   const t = WORDS[lang];
   const current = data.dasha.current;
@@ -121,7 +158,7 @@ export function renderDetailedPredictions(data, asc, lang, names, planetName) {
       <div class="prediction-block"><strong>${t.reading}</strong><p>${advice}</p></div>
     </article>`;
   }).join('');
-  return timing + cards;
+  return timing + personalHighlights(data, asc, lang, planetName) + cards;
 }
 
 function fmt(date, lang) {
