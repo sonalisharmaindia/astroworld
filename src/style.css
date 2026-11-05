@@ -266,3 +266,16 @@ td{color:#463d4b}
  .pdf-body .chart-evidence{display:none!important}
  .pdf-body .personalised-reading li{font-size:10pt;line-height:1.7}
 }
+
+
+/* Dasha and live transit timing insight */
+.timing-insights-card{grid-column:1/-1;margin:10px 0 18px;padding:22px 24px;border:1px solid #ddc99f;border-radius:16px;background:linear-gradient(135deg,#fffdf8,#f4ead8);box-shadow:0 8px 24px #3d2d1808}
+.timing-insights-card>.dasha-summary-kicker{font:700 10px Arial,sans-serif;letter-spacing:1.5px;text-transform:uppercase;color:#98713b;margin-bottom:15px}
+.timing-insights-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}
+.timing-insights-grid section+section{border-left:1px solid #e2d3b8;padding-left:22px}
+.timing-insights-grid h4{font:600 17px Georgia,serif;color:#493750;margin:0 0 10px}
+.timing-insights-grid ul{padding-left:18px;margin:0}
+.timing-insights-grid li{font-size:12px;line-height:1.8;color:#51475b;margin-bottom:9px}
+.timing-disclaimer{border-top:1px solid #e7dcc8;padding-top:10px;margin:12px 0 0;color:#766a70;font-size:10px;line-height:1.6}
+@media(max-width:800px){.timing-insights-grid{grid-template-columns:1fr}.timing-insights-grid section+section{border-left:0;border-top:1px solid #e2d3b8;padding:15px 0 0}}
+@media print{.pdf-body .timing-insights-card{box-shadow:none;break-inside:avoid;padding:5mm}.pdf-body .timing-insights-grid li{font-size:9pt;line-height:1.6}}
