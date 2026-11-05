@@ -200,6 +200,26 @@ async function calculate(date,time,timezone,lat,lon){
   const transitDate = new Date();
   const transitJd = transitDate.getTime() / 86400000 + 2440587.5;
   const transitPlanets = getPlanetPositions(transitDate, transitJd);
+  const dasha = dashaSchedule(moon.longitude,birthUtc);
+  const forecast = [];
+  const horizon = new Date(transitDate);
+  horizon.setFullYear(horizon.getFullYear()+5);
+  for(let year=transitDate.getFullYear();year<=horizon.getFullYear();year++){
+    const samples=[];
+    for(let month=0;month<12;month++){
+      const sampleDate=new Date(year,month,15,12,0,0);
+      if(sampleDate<transitDate||sampleDate>horizon)continue;
+      const sampleJd=sampleDate.getTime()/86400000+2440587.5;
+      const positions=getPlanetPositions(sampleDate,sampleJd);
+      samples.push({date:sampleDate,planets:positions.filter(p=>p.name==='Jupiter'||p.name==='Saturn').map(p=>({name:p.name,longitude:p.longitude}))});
+    }
+    const yearStart=new Date(year,0,1),yearEnd=new Date(year+1,0,1);
+    const periods=dasha.periods.filter(p=>p.start<yearEnd&&p.end>yearStart).map(p=>({
+      lord:p.lord,start:p.start,end:p.end,
+      subs:p.subs.filter(s=>s.start<yearEnd&&s.end>yearStart).map(s=>({lord:s.lord,start:s.start,end:s.end}))
+    }));
+    forecast.push({year,samples,periods});
+  }
 
   return {
     person: $('fullName').value.trim(),
@@ -213,7 +233,8 @@ async function calculate(date,time,timezone,lat,lon){
     planets: planetList,
     transits: transitPlanets,
     transitDate,
-    dasha: dashaSchedule(moon.longitude,birthUtc)
+    dasha,
+    forecast
   };
 }
 $('year').textContent=new Date().getFullYear();
