@@ -193,3 +193,30 @@ td{color:#463d4b}
   .pdf-body .prediction-period{font-size:8.5pt}
   .pdf-disclaimer{border:1px solid #d9c7a6;background:#f2eadb;padding:10mm;font-size:12pt;line-height:1.9;color:#51455a}
 }
+
+
+/* Reader-first interpretation cards and a single Dasha overview */
+#lifeReports{align-items:stretch}
+.dasha-summary-card{
+  grid-column:1/-1;display:flex;align-items:flex-start;gap:16px;
+  padding:20px 23px;border:1px solid #d8c39a;border-radius:16px;
+  background:linear-gradient(115deg,#f6edda 0%,#fffaf0 58%,#eee5f2 100%);
+  box-shadow:0 8px 22px #5c47200b;margin-bottom:3px
+}
+.dasha-summary-icon{
+  flex:0 0 42px;width:42px;height:42px;display:grid;place-items:center;
+  border-radius:50%;background:#e8d7b5;color:#80613b;font-size:22px
+}
+.dasha-summary-kicker{font-size:10px;letter-spacing:1.8px;text-transform:uppercase;color:#98723a;font-weight:700;margin-bottom:5px}
+.dasha-summary-card h4{font:600 20px/1.35 Georgia,serif;color:#493653;margin:0 0 7px}
+.dasha-summary-card p{font-size:12px;line-height:1.75;color:#655b69;margin:0;max-width:850px}
+.detailed-card{min-width:0}
+.detailed-card .prediction-summary{font-size:13px;line-height:1.8;color:#50475a}
+.detailed-card .prediction-block li{font-size:12px;line-height:1.75;margin-bottom:7px}
+.detailed-card .prediction-block>strong{display:block;margin-bottom:7px}
+.detailed-card .prediction-block p{font-size:12px;line-height:1.8}
+@media(max-width:720px){.dasha-summary-card{padding:16px;gap:11px}.dasha-summary-card h4{font-size:17px}.dasha-summary-icon{flex-basis:34px;width:34px;height:34px}}
+@media print{
+  .pdf-body .dasha-summary-card{display:none}
+  .pdf-body .detailed-card{padding-left:5mm}
+}
