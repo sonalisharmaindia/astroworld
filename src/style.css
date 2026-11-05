@@ -10,3 +10,20 @@ main{max-width:1080px;margin:auto;padding:0 22px 70px}.form-card{max-width:850px
 footer{text-align:center;padding:25px;color:var(--muted);font-size:11px}
 @media(max-width:720px){.form-grid{grid-template-columns:1fr}.wide{grid-column:auto}.report-head{display:block}.pdf-button{margin-top:12px}.summary-strip{grid-template-columns:1fr 1fr}.chart-grid{gap:3px}.chart-cell{min-height:90px;padding:5px;font-size:10px}.life-grid{grid-template-columns:1fr}.form-card,.report{padding:19px}.hero{padding-top:20px}}
 @media print{body{background:white!important;color:#222!important}.topbar,.hero,.form-card,footer,.pdf-button{display:none!important}main{max-width:none;padding:0}.report{display:block!important;box-shadow:none;margin:0;padding:0;background:white}.report-head{padding-bottom:10px}.report-section{break-inside:avoid}.chart-cell{min-height:90px}.table-wrap{overflow:visible}table{font-size:10px}.life-grid{grid-template-columns:repeat(3,1fr)}}
+
+
+/* Detailed prediction report */
+.life-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+.detailed-card{padding:20px;break-inside:avoid}
+.detailed-card h4{font-size:24px;margin:2px 0 12px}
+.prediction-number{font:700 11px/1 Arial,sans-serif;letter-spacing:2px;color:#a17a3e;margin-bottom:10px}
+.prediction-summary{font-size:13px;line-height:1.7;color:#504958;margin:0 0 15px}
+.prediction-block{border-top:1px solid #e7ddce;padding-top:11px;margin-top:11px}
+.prediction-block>strong{display:block;font-size:11px;letter-spacing:.6px;text-transform:uppercase;color:#896a39;margin-bottom:6px}
+.prediction-block p,.prediction-block li{font-size:12px;line-height:1.65;color:#504958}
+.prediction-block p{margin:0}
+.prediction-block ul{padding-left:18px;margin:5px 0 0}
+.prediction-block li+li{margin-top:5px}
+.prediction-period{border-top:1px dashed #d8c9b2;padding-top:10px;margin:13px 0 0;font-size:11px;color:#65576e}
+@media(max-width:720px){.life-grid{grid-template-columns:1fr}.detailed-card{padding:16px}}
+@media print{.life-grid{grid-template-columns:1fr 1fr}.detailed-card{break-inside:avoid}}
