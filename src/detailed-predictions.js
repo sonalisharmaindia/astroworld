@@ -1,3 +1,5 @@
+const DASHA_ORDER = ['Ketu','Venus','Sun','Moon','Mars','Rahu','Jupiter','Saturn','Mercury'];
+
 const SIGN_LORDS = [
   'Mars','Venus','Mercury','Moon','Sun','Mercury',
   'Venus','Mars','Jupiter','Saturn','Saturn','Jupiter'
