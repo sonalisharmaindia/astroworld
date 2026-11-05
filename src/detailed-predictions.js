@@ -272,7 +272,36 @@ export function renderDetailedPredictions(data, asc, lang, names, planetName) {
       <div class="prediction-block"><strong>${t.reading}</strong><p>${advice}</p></div>
     </article>`;
   }).join('');
-  return timing + personalHighlights(data, asc, lang, planetName) + cards;
+  return timing + dashaTransitReading(data, asc, lang, names, planetName) + personalHighlights(data, asc, lang, planetName) + cards;
+}
+
+
+function dashaTransitReading(data,asc,lang,names,planetName){
+ const current=data.dasha.current, now=new Date();
+ const antar=current.subs.find(p=>now>=p.start&&now<p.end);
+ const periods=[current.lord,antar?.lord].filter(Boolean);
+ const getNatalHouse=name=>{const p=data.planets.find(x=>x.name===name);if(!p)return null;return (Math.floor((((p.longitude%360)+360)%360)/30)-asc+12)%12+1;};
+ const periodLines=periods.map((name,i)=>{
+  const h=getNatalHouse(name),planet=planetName(name);
+  if(!h)return '';
+  return lang==='ta'
+   ? `${i===0?'மகாதசை':'அந்தர்தசை'} அதிபதி ${planet}, உங்கள் ${h}ஆம் பாவத்தில் உள்ளது. ${HOUSE_MEANING.ta[h]} தொடர்பான விஷயங்கள் இந்தக் காலகட்டத்தில் அதிக கவனம் பெறலாம்.`
+   : `Your ${i===0?'Mahadasha':'Antardasha'} lord, ${planet}, is placed in your ${ordinal(h)} house. Matters connected with ${HOUSE_MEANING.en[h]} may receive more attention during this period.`;
+ }).filter(Boolean);
+ const transits=data.transits||[];
+ const slow=transits.filter(p=>['Jupiter','Saturn'].includes(p.name));
+ const transitLines=slow.map(p=>{
+  const sign=Math.floor((((p.longitude%360)+360)%360)/30),h=(sign-asc+12)%12+1;
+  const label=planetName(p.name);
+  return lang==='ta'
+   ? `தற்போதைய ${label} பெயர்ச்சி உங்கள் ${h}ஆம் பாவத்தில் நடைபெறுகிறது. இது ${HOUSE_MEANING.ta[h]} தொடர்பான விஷயங்களைப் பாரம்பரியமாக முன்னிலைப்படுத்துகிறது.`
+   : `Current ${label} transit is through your ${ordinal(h)} house, traditionally bringing attention to ${HOUSE_MEANING.en[h]}.`;
+ });
+ const title=lang==='ta'?'நடப்பு காலகட்டம் மற்றும் கிரகப் பெயர்ச்சி':'Your current timing & transits';
+ const dashaTitle=lang==='ta'?'விம்சோத்தரி தசை':'Your running Dasha';
+ const transitTitle=lang==='ta'?'தற்போதைய குரு மற்றும் சனி பெயர்ச்சி':'Current Jupiter & Saturn transits';
+ const caveat=lang==='ta'?'தசை மற்றும் பெயர்ச்சி விளக்கங்கள் பாரம்பரிய ஜோதிடக் குறியீடுகள் மட்டுமே. இவை நிகழ்வுகளை உறுதிப்படுத்துவதில்லை.':'Dasha and transit descriptions are traditional astrological themes, not guarantees that an event will happen.';
+ return `<article class="timing-insights-card"><div class="dasha-summary-kicker">${title}</div><div class="timing-insights-grid"><section><h4>${dashaTitle}</h4><ul>${periodLines.map(x=>`<li>${x}</li>`).join('')}</ul></section><section><h4>${transitTitle}</h4><ul>${transitLines.map(x=>`<li>${x}</li>`).join('')}</ul></section></div><p class="timing-disclaimer">${caveat}</p></article>`;
 }
 
 function fmt(date, lang) {
