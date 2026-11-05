@@ -1,5 +1,6 @@
 import './style.css';
 import * as Astronomy from 'astronomy-engine';
+import { renderDetailedPredictions } from './detailed-predictions.js';
 
 const $ = (id) => document.getElementById(id);
 const names = {
@@ -172,9 +173,7 @@ function renderChart(data){
   $('navamsaChart').innerHTML=makeChart(all,asc,9);
   $('nakshatraPanel').innerHTML=`<p><strong>${t.birthStar}:</strong> ${t.nak[nakIndex]} &nbsp; <strong>${t.pada}:</strong> ${pada}</p><p><strong>${t.nakLord}:</strong> ${t.dashaLords[DASHA_ORDER.indexOf(NAK_LORDS[nakIndex])]}</p><p><strong>${t.balance}:</strong> ${data.dasha.balance.toFixed(2)} ${lang==='ta'?'ஆண்டுகள்':'years'} (${t.dashaLords[DASHA_ORDER.indexOf(data.dasha.firstLord)]})</p>`;
   renderDasha(data.dasha);
-  const housePlanet=(h)=>data.planets.find(p=>houseOf(p,asc)===h)||data.planets.find(p=>p.name==='Jupiter');
-  const cards=[['marriage','Marriage'],['career','Career'],['finance','Finance'],['overall','Overall']];
-  $('lifeReports').innerHTML=cards.map(([key])=>{const h=key==='marriage'?7:key==='career'?10:key==='finance'?2:1,p=housePlanet(h)||data.planets[0];return `<article class="life-card"><h4>${t[key]}</h4><p>${reportText(key==='marriage'?'reportMarriage':key==='career'?'reportCareer':key==='finance'?'reportFinance':'reportOverall',p.name,h)}</p></article>`}).join('');
+  $('lifeReports').innerHTML=renderDetailedPredictions(data,asc,lang,names,planetName);
   $('planetTable').innerHTML=`<table><thead><tr><th>${t.planet}</th><th>${t.sign}</th><th>${t.degree}</th><th>${t.house}</th></tr></thead><tbody>${data.planets.map(p=>`<tr><td>${planetName(p.name)}</td><td>${signName(Math.floor(norm(p.longitude)/30))}</td><td>${(norm(p.longitude)%30).toFixed(2)}°</td><td>${houseOf(p,asc)}</td></tr>`).join('')}</tbody></table>`;
   $('report').hidden=false;$('report').scrollIntoView({behavior:'smooth'});
 }
