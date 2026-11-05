@@ -243,6 +243,43 @@ function practicalGuidance(topic,data,asc,lang,planetName){
  return `The ruler of the key ${ordinal(primary)} house for this area, ${name}, is placed in your ${ordinal(placedHouse)} house. This connects it with ${HOUSE_MEANING.en[placedHouse]}. ${PRACTICAL_ACTIONS.en[placedHouse]} ${TOPIC_ACTION.en[topic.id]}`;
 }
 
+
+function fiveYearForecast(data,asc,lang,names,planetName){
+ const years=data.forecast||[];
+ if(!years.length)return '';
+ const title=lang==='ta'?'அடுத்த 5 ஆண்டுகளுக்கான காலக் கணிப்பு':'Your five-year outlook';
+ const intro=lang==='ta'?'ஒவ்வொரு ஆண்டின் நடுப்பகுதியில் கணக்கிடப்பட்ட குரு மற்றும் சனி நிலைகள், உங்கள் லக்னத்திலிருந்து வாசிக்கப்பட்டுள்ளன. தசை காலங்கள் பிறப்பு சந்திர நட்சத்திரத்தின் அடிப்படையில் கணக்கிடப்பட்டவை.':'Jupiter and Saturn are sampled monthly through the forecast window and read from your Ascendant. Dasha periods are calculated from your birth Moon Nakshatra.';
+ const topics=[
+  {id:'career',label:lang==='ta'?'தொழில்':'Career',houses:[10,6,2,11,3]},
+  {id:'marriage',label:lang==='ta'?'திருமணம் மற்றும் உறவுகள்':'Marriage & relationships',houses:[7,2,5,8,11]},
+  {id:'finance',label:lang==='ta'?'நிதி':'Finances',houses:[2,11,5,9,10]}
+ ];
+ const natalHouse=lord=>{const p=data.planets.find(x=>x.name===lord);if(!p)return null;return (Math.floor((((p.longitude%360)+360)%360)/30)-asc+12)%12+1;};
+ const rendered=years.map(y=>{
+  const transitByPlanet={Jupiter:[],Saturn:[]};
+  y.samples.forEach(s=>s.planets.forEach(p=>{const h=(Math.floor((((p.longitude%360)+360)%360)/30)-asc+12)%12+1;if(!transitByPlanet[p.name].includes(h))transitByPlanet[p.name].push(h);}));
+  const activeDashas=[];
+  y.periods.forEach(p=>{
+   if(!activeDashas.some(x=>x.lord===p.lord))activeDashas.push({lord:p.lord,start:p.start,end:p.end,type:'M'});
+   p.subs.forEach(s=>{if(!activeDashas.some(x=>x.lord===s.lord&&x.type==='A'))activeDashas.push({lord:s.lord,start:s.start,end:s.end,type:'A'});});
+  });
+  const dashaText=activeDashas.map(p=>`${p.type==='M'?(lang==='ta'?'மகா':'MD'):(lang==='ta'?'அந்தர்':'AD')} ${planetName(p.lord)} · ${fmt(p.start,lang)}–${fmt(p.end,lang)}`).join(' · ');
+  const transText=['Jupiter','Saturn'].map(n=>{const hs=transitByPlanet[n];return hs.length?`${planetName(n)}: ${hs.map(h=>lang==='ta'?`${h}ஆம் பாவம்`:`${ordinal(h)} house`).join(', ')}`:'';}).filter(Boolean).join(' · ');
+  const domain=topics.map(t=>{
+   const dashaMatches=activeDashas.map(p=>({lord:p.lord,house:natalHouse(p.lord)})).filter(p=>t.houses.includes(p.house));
+   const transitMatches=['Jupiter','Saturn'].flatMap(n=>(transitByPlanet[n]||[]).filter(h=>t.houses.includes(h)).map(h=>({planet:n,house:h})));
+   const bits=[];
+   if(dashaMatches.length)bits.push(lang==='ta'? `தசை அதிபதி ${dashaMatches.map(x=>planetName(x.lord)).join(', ')} ${dashaMatches.map(x=>x.house+'ஆம் பாவம்').join(', ')} தொடர்புடையது`:`Dasha lord(s) ${dashaMatches.map(x=>planetName(x.lord)).join(', ')} connect with your ${dashaMatches.map(x=>ordinal(x.house)).join(' and ')} house`);
+   if(transitMatches.length)bits.push(lang==='ta'? `குரு/சனி பெயர்ச்சி ${transitMatches.map(x=>x.house+'ஆம் பாவம்').join(', ')} வழியாகச் செல்கிறது`:`Jupiter/Saturn pass through your ${transitMatches.map(x=>ordinal(x.house)).join(' and ')} house`);
+   if(!bits.length)return `<li><strong>${t.label}:</strong> ${lang==='ta'?'இந்த ஆண்டின் மாதிரி கணக்கீட்டில் இந்தத் துறைக்கான முக்கிய பாவங்களில் நேரடி தசை அல்லது குரு/சனி பெயர்ச்சி தொடர்பு குறைவாக உள்ளது. முழு ஜாதகத்துடன் சேர்த்துப் பாருங்கள்.':'No direct Dasha-lord or sampled Jupiter/Saturn link to the key houses for this topic stands out this year. Read it alongside the full chart.'}</li>`;
+   return `<li><strong>${t.label}:</strong> ${bits.join('; ')}. ${lang==='ta'?'இது இந்தத் துறையில் திட்டமிட்டு கவனம் செலுத்த ஏற்ற காலமாக இருக்கலாம்; நிகழ்வு உறுதி அல்ல.':'This can be a useful period to give this area deliberate attention; it does not guarantee an event.'}</li>`;
+  }).join('');
+  return `<section class="forecast-year"><div class="forecast-year-head"><h4>${y.year}</h4><span>${lang==='ta'?'தசை மற்றும் பெயர்ச்சி':'Dasha & transit themes'}</span></div><p class="forecast-periods">${dashaText|| (lang==='ta'?'இந்த ஆண்டில் தசை மாற்றம் இல்லை':'No Mahadasha/Antardasha boundary within this year')}</p><p class="forecast-transits">${transText}</p><ul>${domain}</ul></section>`;
+ }).join('');
+ const caveat=lang==='ta'?'குறிப்பு: பெயர்ச்சி பாவங்கள் மாதந்தோறும் மாதிரி எடுக்கப்பட்டுள்ளன; துல்லியமான பெயர்ச்சி நுழைவு நாள்/நேரம் அல்ல. பாரம்பரிய விளக்கங்கள் சாத்தியமான கருப்பொருள்கள் மட்டுமே.':'Note: transit houses are sampled monthly, not exact ingress timestamps. These are traditional themes, not event predictions.';
+ return `<article class="five-year-forecast"><div class="dasha-summary-kicker">${title}</div><p class="forecast-intro">${intro}</p><div class="forecast-years">${rendered}</div><p class="timing-disclaimer">${caveat}</p></article>`;
+}
+
 export function renderDetailedPredictions(data, asc, lang, names, planetName) {
   const t = WORDS[lang];
   const current = data.dasha.current;
@@ -272,7 +309,7 @@ export function renderDetailedPredictions(data, asc, lang, names, planetName) {
       <div class="prediction-block"><strong>${t.reading}</strong><p>${advice}</p></div>
     </article>`;
   }).join('');
-  return timing + dashaTransitReading(data, asc, lang, names, planetName) + personalHighlights(data, asc, lang, planetName) + cards;
+  return timing + dashaTransitReading(data, asc, lang, names, planetName) + fiveYearForecast(data, asc, lang, names, planetName) + personalHighlights(data, asc, lang, planetName) + cards;
 }
 
 
