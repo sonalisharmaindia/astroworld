@@ -123,3 +123,73 @@ td{color:#463d4b}
   .detailed-card{box-shadow:none;break-inside:avoid;print-color-adjust:exact;-webkit-print-color-adjust:exact}
   .detailed-card:hover{transform:none}
 }
+
+
+/* Print-ready 22-page personalised Kundli booklet */
+.pdf-book{display:none}
+@media screen{.pdf-book{display:none!important}}
+@media print{
+  @page{size:A4;margin:0}
+  html,body{margin:0!important;padding:0!important;background:#fff!important}
+  body{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  body>*{visibility:hidden}
+  #app{visibility:visible}
+  #app>*{visibility:hidden}
+  main{visibility:visible!important;display:block!important;margin:0!important;padding:0!important;max-width:none!important}
+  #pdfBook,#pdfBook *{visibility:visible!important}
+  #pdfBook{display:block!important;position:absolute;left:0;top:0;width:210mm;background:#fff}
+  #report,#report *{visibility:hidden!important;display:none!important}
+  .pdf-page{
+    box-sizing:border-box;position:relative;width:210mm;height:297mm;min-height:297mm;
+    padding:18mm 18mm 17mm;background:#fffaf1;color:#392f40;overflow:hidden;
+    page-break-after:always;break-after:page;
+    font-family:Georgia,'Noto Serif Tamil',serif;
+  }
+  .pdf-page:last-child{page-break-after:auto;break-after:auto}
+  .pdf-running{display:flex;justify-content:space-between;border-bottom:1px solid #ddcba8;padding-bottom:8px;color:#8b6b3e;font:700 8pt Arial,sans-serif;letter-spacing:1.4px}
+  .pdf-kicker{margin-top:19mm;color:#a17b3e;font:700 8pt Arial,sans-serif;letter-spacing:2.5px;text-transform:uppercase}
+  .pdf-page h2{font:normal 27pt Georgia,'Noto Serif Tamil',serif;color:#3d304c;margin:5mm 0 8mm;line-height:1.16}
+  .pdf-body{font-size:10.5pt;line-height:1.65}
+  .pdf-body h3{font-size:15pt;color:#725538;margin:9mm 0 4mm}
+  .pdf-body p{margin:0 0 5mm}
+  .pdf-page-no{position:absolute;bottom:8mm;right:18mm;color:#947b5d;font:8pt Arial,sans-serif}
+  .pdf-cover{background:radial-gradient(circle at 50% 38%,#3b3450 0,#1a2038 55%,#10172b 100%);color:#fff5dc;text-align:center;padding:27mm 20mm}
+  .pdf-cover .cover-ornament{position:absolute;inset:9mm;border:1px solid #b99a60;outline:1px solid #b99a6044;outline-offset:4mm;color:#d7b875;font-size:30pt;display:flex;align-items:flex-start;justify-content:center;padding-top:9mm}
+  .cover-brand{position:relative;margin-top:25mm;color:#e5c986;font:700 11pt Arial,sans-serif;letter-spacing:4px}
+  .cover-rule{height:1px;width:48mm;background:#c9a96b;margin:13mm auto}
+  .cover-kicker{color:#d8c08b;font:8pt Arial,sans-serif;letter-spacing:3px}
+  .pdf-cover h1{font:normal 36pt Georgia,'Noto Serif Tamil',serif;color:#fff8e8;margin:15mm 0 4mm;overflow-wrap:anywhere}
+  .cover-subtitle{font:italic 14pt Georgia,serif;color:#dfd0ad}
+  .cover-orbit{margin:25mm 0 20mm;color:#d8b875;font-size:25pt;letter-spacing:8px}
+  .cover-details{display:flex;flex-direction:column;gap:5mm;color:#f4e7ca;font:10pt Arial,sans-serif}
+  .cover-bottom{position:absolute;bottom:25mm;left:20mm;right:20mm;color:#c6b58f;font:7pt/1.8 Arial,sans-serif;letter-spacing:1.6px}
+  .pdf-toc{list-style:none;padding:0;margin:0}
+  .pdf-toc li{display:flex;gap:8px;align-items:baseline;border-bottom:1px dotted #cbb996;padding:3.2mm 0;font-size:10pt}
+  .pdf-toc li span{flex:1}
+  .pdf-toc li b{color:#97733e;font:700 9pt Arial,sans-serif}
+  .pdf-facts{display:grid;grid-template-columns:1fr 1fr;gap:4mm;margin:5mm 0 8mm}
+  .pdf-facts>div{border:1px solid #e1d3b9;background:#fffdf8;border-radius:3mm;padding:4mm}
+  .pdf-facts small{display:block;color:#8b7658;font:7pt Arial,sans-serif;text-transform:uppercase;letter-spacing:1px;margin-bottom:2mm}
+  .pdf-facts strong{font-size:10pt;color:#40344c;overflow-wrap:anywhere}
+  .pdf-body .summary-strip{display:grid;grid-template-columns:1fr 1fr;gap:3mm;margin:5mm 0}
+  .pdf-body .summary-cell{padding:3mm;border:1px solid #e3d5bc;background:#fffdf8}
+  .pdf-body .summary-cell strong{font-size:11pt}
+  .pdf-chart .chart-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2mm;max-width:none;margin:8mm auto}
+  .pdf-chart .chart-cell{min-height:34mm;border:1px solid #cdb98f;background:#fffdf7;padding:3mm;font-size:8pt}
+  .pdf-chart .chart-cell .sign{font-size:8pt;color:#916d37}
+  .pdf-chart .chart-cell .planets{font-size:8pt}
+  .pdf-note{border-left:3px solid #b18b4d;background:#f2eadb;padding:5mm;margin-top:8mm;font-size:9pt;line-height:1.7}
+  .pdf-body .info-panel{padding:5mm;margin-bottom:5mm}
+  .pdf-body .table-wrap{overflow:visible;border:0}
+  .pdf-body table{width:100%;font-size:8.5pt;border-collapse:collapse}
+  .pdf-body th,.pdf-body td{padding:2.6mm;border-bottom:1px solid #e4d8c5}
+  .pdf-body th{background:#eee3d0;color:#604b65}
+  .pdf-body .detailed-card{border:0;border-left:3px solid #b18b4d;border-radius:0;padding:2mm 0 0 6mm;background:transparent;box-shadow:none}
+  .pdf-body .detailed-card:before{display:none}
+  .pdf-body .detailed-card h4{font-size:21pt;color:#493653}
+  .pdf-body .prediction-summary,.pdf-body .prediction-block p,.pdf-body .prediction-block li{font-size:10pt;line-height:1.75}
+  .pdf-body .prediction-block{margin-top:5mm;padding-top:4mm}
+  .pdf-body .prediction-block>strong{font-size:8pt;color:#8e6b38}
+  .pdf-body .prediction-period{font-size:8.5pt}
+  .pdf-disclaimer{border:1px solid #d9c7a6;background:#f2eadb;padding:10mm;font-size:12pt;line-height:1.9;color:#51455a}
+}
