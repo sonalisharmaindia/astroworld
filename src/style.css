@@ -318,3 +318,10 @@ td{color:#463d4b}
 .forecast-action span{font-weight:700;color:#8c6838}
 @media(max-width:800px){.forecast-domain-list{grid-template-columns:1fr}.forecast-year{padding:15px}.forecast-year-title{font-size:14px}}
 @media print{.pdf-body .forecast-domain-list{grid-template-columns:repeat(3,minmax(0,1fr));gap:2mm}.pdf-body .forecast-domain-list>li{padding:2mm}.pdf-body .forecast-domain-list>li>p{font-size:7pt}.pdf-body .forecast-story,.pdf-body .forecast-year-title{font-size:8pt}}
+
+/* Refined bilingual hero typography */
+.hero{max-width:1040px;margin:12px auto 48px;padding:42px 24px 34px;text-align:center}
+.hero h1{max-width:900px;margin:18px auto 20px;font:600 clamp(40px,6.2vw,68px)/1.12 Georgia,serif;letter-spacing:-1.2px;text-wrap:balance}
+.hero h1 em{display:inline;color:var(--gold);font-style:normal}
+.hero p{max-width:700px;margin:0 auto;color:var(--muted);font-size:16px;line-height:1.8}
+@media(max-width:640px){.hero{margin:4px auto 28px;padding:30px 18px 24px}.hero h1{font-size:clamp(35px,9vw,48px);line-height:1.16;letter-spacing:-.5px}.hero p{font-size:14px;line-height:1.75}}
