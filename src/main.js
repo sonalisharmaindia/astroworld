@@ -296,7 +296,8 @@ function build2027Forecast(data){
  const actionsTa=['ஒரு முக்கிய இலக்கைத் தேர்ந்தெடுத்து முதல் படியைத் தெளிவுபடுத்துங்கள்.','செலவுகளை மதிப்பாய்வு செய்து நேரத்தையும் ஒப்பந்தங்களையும் கவனமாக நிர்வகியுங்கள்.','தள்ளிப்போட்ட உரையாடலை நடத்தி அடுத்த செயலை எழுதுங்கள்.','ஓய்வுக்கு நேரம் ஒதுக்கி ஆதரவான தினசரி ஒழுங்கை வலுப்படுத்துங்கள்.','உங்கள் கருத்துகளைப் பகிர்ந்து புதிய கற்றலுக்கு இடமளியுங்கள்.','அட்டவணையை ஒழுங்குபடுத்தி ஒரு வேலையை முடித்த பிறகு அடுத்ததைத் தொடங்குங்கள்.','கவனமாகக் கேட்டு எதிர்பார்ப்புகளைத் தெளிவுபடுத்தி நம்பிக்கையை வளர்த்துக் கொள்ளுங்கள்.','பகிர்ந்த பண விஷயங்களில் கவனமாக இருந்து அவசர முடிவுகளைத் தவிருங்கள்.','உங்கள் பார்வையை விரிவுபடுத்தும் பாடநெறி அல்லது வழிகாட்டியைத் தேடுங்கள்.','உங்கள் திறமையை நம்பிக்கையுடன் வெளிப்படுத்தி அர்த்தமுள்ள இலக்கை நோக்கி நகருங்கள்.','உதவிகரமானவர்களுடன் தொடர்புகொண்டு நல்ல யோசனையைத் திட்டமாக மாற்றுங்கள்.','வேகத்தைக் குறைத்து ஆண்டை மதிப்பாய்வு செய்து தேவையற்ற சுமைகளை விடுவியுங்கள்.'];
  const fmt=d=>new Intl.DateTimeFormat(ta?'ta-IN':'en-GB',{day:'numeric',month:'short',year:'numeric',timeZone:data.timezone}).format(d);
  const dashaAt=date=>{const p=data.dasha.periods.find(x=>date>=x.start&&date<x.end);if(!p)return null;const s=p.subs.find(x=>date>=x.start&&date<x.end);return {major:p.lord,minor:s?.lord};};
- const yearEvents=buildTransitCalendar(new Date(Date.UTC(2027,0,1)),new Date(Date.UTC(2028,0,1)));\n const rows=[];
+ const yearEvents=buildTransitCalendar(new Date(Date.UTC(2027,0,1)),new Date(Date.UTC(2028,0,1)));
+ const rows=[];
  for(let i=0;i<12;i++){
   const date=new Date(Date.UTC(2027,i,15,12)),jd=date.getTime()/86400000+2440587.5,pos=getPlanetPositions(date,jd),j=pos.find(p=>p.name==='Jupiter'),s=pos.find(p=>p.name==='Saturn'),jh=houseOf(j,asc),sh=houseOf(s,asc),d=dashaAt(date);
   const events=yearEvents.filter(e=>e.date.getUTCMonth()===i);
