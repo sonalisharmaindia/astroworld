@@ -261,7 +261,7 @@ async function calculate(date,time,timezone,lat,lon){
   };
 }
 $('year').textContent=new Date().getFullYear();
-$('language').addEventListener('change',e=>{lang=e.target.value;document.documentElement.lang=lang;document.querySelectorAll('[data-i18n]').forEach(el=>el.textContent=names[lang][el.dataset.i18n]||el.textContent);if(lastChart)renderChart(lastChart);});
+$('language').addEventListener('change',e=>{lang=e.target.value;document.documentElement.lang=lang;document.querySelectorAll('[data-i18n]').forEach(el=>{const value=names[lang][el.dataset.i18n];if(value!==undefined){if(el.dataset.i18n==='heroTitle')el.innerHTML=value;else el.textContent=value;}});if(lastChart)renderChart(lastChart);});
 $('findPlace').addEventListener('click',async()=>{
   const q=$('birthPlace').value.trim();if(!q)return;
   $('placeStatus').textContent='Searching…';
