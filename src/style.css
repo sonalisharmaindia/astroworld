@@ -303,3 +303,18 @@ td{color:#463d4b}
 
 /* Exact-date Jupiter and Saturn transit calendar */
 .transit-calendar-card{grid-column:1/-1;margin:12px 0 18px;padding:22px 24px;border:1px solid #ddc99f;border-radius:16px;background:linear-gradient(145deg,#fffdf8,#f6eddf);box-shadow:0 8px 24px #3d2d1808}.transit-event-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 20px}.transit-event{display:grid;grid-template-columns:132px 78px 1fr;gap:9px;align-items:center;padding:11px 0;border-bottom:1px solid #eadfce}.transit-event time{font:11px Arial,sans-serif;color:#756a73}.transit-event strong{font:700 11px Arial,sans-serif;color:#493750}.transit-event span{font-size:11px;line-height:1.5;color:#5e5362}@media(max-width:800px){.transit-event-list{grid-template-columns:1fr}.transit-event{grid-template-columns:112px 64px 1fr;gap:7px}.transit-calendar-card{padding:17px}}@media print{.pdf-body .transit-calendar-card{box-shadow:none;padding:3mm;margin:0}.pdf-body .transit-event-list{grid-template-columns:1fr 1fr;gap:0 4mm}.pdf-body .transit-event{grid-template-columns:27mm 15mm 1fr;gap:2mm;padding:2mm 0}.pdf-body .transit-event time,.pdf-body .transit-event strong,.pdf-body .transit-event span{font-size:7pt}}
+
+/* More editorial, uplifting five-year outlook */
+.forecast-year{padding:19px 21px 20px;border-left:3px solid #b78b4c;background:linear-gradient(120deg,#fffdf8 0%,#fffaf1 100%)}
+.forecast-year-title{font:600 15px Georgia,serif;color:#674b36;margin:3px 0 8px}
+.forecast-story{font-size:12px;line-height:1.8;color:#53485a;margin:0 0 10px}
+.forecast-periods{padding:8px 10px;background:#f7f0e5;border-radius:7px;color:#806744}
+.forecast-transits{font-size:10px;color:#7b6583;font-weight:600}
+.forecast-domain-list{list-style:none;padding:0!important;margin:12px 0 0!important;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.forecast-domain-list>li{padding:12px 13px;background:#fff;border:1px solid #eee3d2;border-radius:9px;margin:0!important}
+.forecast-domain-list>li>strong{display:block;font:700 11px Arial,sans-serif;color:#765735;margin-bottom:6px}
+.forecast-domain-list>li>p{font-size:10.5px;line-height:1.65;color:#5b5360;margin:0 0 7px}
+.forecast-domain-list>li>p.forecast-action{border-top:1px solid #f0e7da;padding-top:7px;color:#3f5f53}
+.forecast-action span{font-weight:700;color:#8c6838}
+@media(max-width:800px){.forecast-domain-list{grid-template-columns:1fr}.forecast-year{padding:15px}.forecast-year-title{font-size:14px}}
+@media print{.pdf-body .forecast-domain-list{grid-template-columns:repeat(3,minmax(0,1fr));gap:2mm}.pdf-body .forecast-domain-list>li{padding:2mm}.pdf-body .forecast-domain-list>li>p{font-size:7pt}.pdf-body .forecast-story,.pdf-body .forecast-year-title{font-size:8pt}}
