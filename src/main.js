@@ -261,7 +261,7 @@ async function calculate(date,time,timezone,lat,lon){
   };
 }
 $('year').textContent=new Date().getFullYear();
-$('language').addEventListener('change',e=>{lang=e.target.value;document.documentElement.lang=lang;document.querySelectorAll('[data-i18n]').forEach(el=>{const value=names[lang][el.dataset.i18n];if(value!==undefined){if(el.dataset.i18n==='heroTitle')el.innerHTML=value;else el.textContent=value;}});if(lastChart)renderChart(lastChart);});
+$('language').addEventListener('change',e=>{lang=e.target.value;document.documentElement.lang=lang;document.querySelectorAll('[data-i18n]').forEach(el=>{const value=names[lang][el.dataset.i18n];if(value!==undefined){if(el.dataset.i18n==='heroTitle')el.innerHTML=value;else el.textContent=value;}});const forecastButton=$('download2027');if(forecastButton){forecastButton.querySelector('.forecast-download-title').textContent=forecastButton.querySelector('.forecast-download-title').dataset[lang];forecastButton.querySelector('small').textContent=forecastButton.querySelector('small').dataset[lang];}if(lastChart)renderChart(lastChart);});
 $('findPlace').addEventListener('click',async()=>{
   const q=$('birthPlace').value.trim();if(!q)return;
   $('placeStatus').textContent='Searching…';
@@ -296,16 +296,16 @@ function build2027Forecast(data){
  const actionsTa=['ஒரு முக்கிய இலக்கைத் தேர்ந்தெடுத்து முதல் படியைத் தெளிவுபடுத்துங்கள்.','செலவுகளை மதிப்பாய்வு செய்து நேரத்தையும் ஒப்பந்தங்களையும் கவனமாக நிர்வகியுங்கள்.','தள்ளிப்போட்ட உரையாடலை நடத்தி அடுத்த செயலை எழுதுங்கள்.','ஓய்வுக்கு நேரம் ஒதுக்கி ஆதரவான தினசரி ஒழுங்கை வலுப்படுத்துங்கள்.','உங்கள் கருத்துகளைப் பகிர்ந்து புதிய கற்றலுக்கு இடமளியுங்கள்.','அட்டவணையை ஒழுங்குபடுத்தி ஒரு வேலையை முடித்த பிறகு அடுத்ததைத் தொடங்குங்கள்.','கவனமாகக் கேட்டு எதிர்பார்ப்புகளைத் தெளிவுபடுத்தி நம்பிக்கையை வளர்த்துக் கொள்ளுங்கள்.','பகிர்ந்த பண விஷயங்களில் கவனமாக இருந்து அவசர முடிவுகளைத் தவிருங்கள்.','உங்கள் பார்வையை விரிவுபடுத்தும் பாடநெறி அல்லது வழிகாட்டியைத் தேடுங்கள்.','உங்கள் திறமையை நம்பிக்கையுடன் வெளிப்படுத்தி அர்த்தமுள்ள இலக்கை நோக்கி நகருங்கள்.','உதவிகரமானவர்களுடன் தொடர்புகொண்டு நல்ல யோசனையைத் திட்டமாக மாற்றுங்கள்.','வேகத்தைக் குறைத்து ஆண்டை மதிப்பாய்வு செய்து தேவையற்ற சுமைகளை விடுவியுங்கள்.'];
  const fmt=d=>new Intl.DateTimeFormat(ta?'ta-IN':'en-GB',{day:'numeric',month:'short',year:'numeric',timeZone:data.timezone}).format(d);
  const dashaAt=date=>{const p=data.dasha.periods.find(x=>date>=x.start&&date<x.end);if(!p)return null;const s=p.subs.find(x=>date>=x.start&&date<x.end);return {major:p.lord,minor:s?.lord};};
- const rows=[];
+ const yearEvents=buildTransitCalendar(new Date(Date.UTC(2027,0,1)),new Date(Date.UTC(2028,0,1)));\n const rows=[];
  for(let i=0;i<12;i++){
   const date=new Date(Date.UTC(2027,i,15,12)),jd=date.getTime()/86400000+2440587.5,pos=getPlanetPositions(date,jd),j=pos.find(p=>p.name==='Jupiter'),s=pos.find(p=>p.name==='Saturn'),jh=houseOf(j,asc),sh=houseOf(s,asc),d=dashaAt(date);
-  const events=(data.transitEvents||[]).filter(e=>e.date.getUTCFullYear()===2027&&e.date.getUTCMonth()===i);
+  const events=yearEvents.filter(e=>e.date.getUTCMonth()===i);
   const eventText=events.map(e=>{if(e.type==='station')return planetName(e.planet)+(ta?(e.station==='retrograde'?' வக்ரம் தொடக்கம்':' நேர்கதி தொடக்கம்'):(e.station==='retrograde'?' turns retrograde':' turns direct'))+' · '+fmt(e.date);return planetName(e.planet)+(ta?' '+signName(Math.floor(e.longitude/30))+' ராசிக்கு பெயர்ச்சி':' enters '+signName(Math.floor(e.longitude/30)))+' · '+fmt(e.date);}).join(' · ');
   rows.push({date,jh,sh,d,events:eventText,js:signName(Math.floor(norm(j.longitude)/30)),ss:signName(Math.floor(norm(s.longitude)/30))});
  }
  const active=data.dasha.periods.filter(p=>p.start<new Date(Date.UTC(2028,0,1))&&p.end>new Date(Date.UTC(2027,0,1)));
  const lords=[...new Set(active.map(p=>p.lord))].map(planetName).join(' · ');
- const yearEvents=(data.transitEvents||[]).filter(e=>e.date>=new Date(Date.UTC(2027,0,1))&&e.date<new Date(Date.UTC(2028,0,1)));
+
  const overview=(ta?
  '<h3>2027ஆம் ஆண்டின் மொத்தப் பார்வை</h3><p>இந்த ஆண்டு உங்கள் தனிப்பட்ட விம்சோத்தரி தசைச் சுழற்சியையும் லக்னத்திலிருந்து குரு மற்றும் சனியின் பாவப் பெயர்ச்சியையும் இணைத்து வாசிக்கப்படுகிறது. ஏற்கனவே சிறப்பாகச் செயல்படுவதை வலுப்படுத்தி, முக்கிய உறவுகளுக்கு நேரமளித்து, பெரிய முடிவுகளுக்கு முன் நடைமுறைத் திட்டமிடலுடன் முன்னேறுங்கள்.</p>':
  '<h3>Your year at a glance</h3><p>This reading combines your personal Vimshottari Dasha cycle with Jupiter and Saturn moving through houses counted from your Ascendant. Build on what is working, give important relationships care, and make practical plans before taking big steps.</p>')+
