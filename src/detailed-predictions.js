@@ -146,6 +146,17 @@ const TOPIC_FOCUS = {
  en:{overall:'Your overall direction',personality:'Your self-expression',marriage:'Your close relationships',career:'Your professional life',finance:'Your financial habits',education:'Your learning journey',family:'Your family and home life',children:'Your creativity and relationship with children',wellbeing:'Your routines and personal balance',travel:'Travel and life beyond familiar surroundings',property:'Your home and assets',spirituality:'Your beliefs and inner life'},
  ta:{overall:'உங்கள் வாழ்க்கைப் பாதை',personality:'உங்கள் சுய வெளிப்பாடு',marriage:'உங்கள் நெருங்கிய உறவுகள்',career:'உங்கள் தொழில் வாழ்க்கை',finance:'உங்கள் நிதிப் பழக்கங்கள்',education:'உங்கள் கல்விப் பயணம்',family:'உங்கள் குடும்பம் மற்றும் இல்லறம்',children:'உங்கள் படைப்பாற்றல் மற்றும் குழந்தைகள் தொடர்பான அம்சங்கள்',wellbeing:'உங்கள் அன்றாட ஒழுங்கு மற்றும் தனிப்பட்ட சமநிலை',travel:'பயணம் மற்றும் பழக்கமான சூழலுக்கு வெளியேயான வாழ்க்கை',property:'உங்கள் வீடு மற்றும் சொத்துகள்',spirituality:'உங்கள் நம்பிக்கைகள் மற்றும் உள்ளார்ந்த வாழ்க்கை'}
 };
+function personalisedTopicReading(topic,data,asc,lang,planetName){
+ const ta=lang==='ta';
+ const links=topic.houses.slice(0,3).map(h=>{const sign=(asc+h-1)%12,lord=SIGN_LORDS[sign],p=data.planets.find(x=>x.name===lord);if(!p)return null;const pSign=Math.floor(((p.longitude%360)+360)%360/30),placed=(pSign-asc+12)%12+1;return {house:h,lord:planetName(lord),placed};}).filter(Boolean);
+ const distinct=links.filter((x,i)=>links.findIndex(y=>y.lord===x.lord&&y.placed===x.placed)===i),lead=distinct[0],support=distinct.find(x=>x.house!==lead?.house);
+ const opening=ta?topic.meaningTa:topic.meaningEn;
+ const angles={overall:ta?'உங்கள் வளர்ச்சிப் பாதையைப் புரிந்துகொள்ள இந்த இணைப்பு உதவும்.':'This combination offers a useful lens on the direction in which you can grow.',personality:ta?'உங்கள் தனித்துவமான பலங்களை வெளிப்படுத்தவும் வளர்க்கவும் இது ஒரு சிந்தனைத் தளம்.':'Think of this as a clue to the qualities you can express and strengthen.',marriage:ta?'உறவில் நீங்கள் கொண்டு வரும் தேவைகள், எதிர்பார்ப்புகள் மற்றும் சமநிலையைப் புரிந்துகொள்ள இது உதவும்.':'This offers a lens on what you bring to partnership and the balance you may value.',career:ta?'உங்கள் திறன்களைப் பொறுப்புடனும் நோக்கத்துடனும் பயன்படுத்தும் வழிகளை இது சுட்டுகிறது.':'This points to ways your abilities can find direction through purposeful work.',finance:ta?'வளங்களை உருவாக்குவது, பாதுகாப்பது மற்றும் விவேகமாகப் பயன்படுத்துவது குறித்து சிந்திக்க இது உதவும்.':'Use this as a prompt to think about building, protecting and managing resources wisely.',education:ta?'கற்றல் உங்களுக்கு எவ்வாறு அர்த்தமுள்ளதாக மாறுகிறது என்பதை ஆராய இது உதவும்.':'This can help you recognise the learning environments in which you thrive.',family:ta?'நிம்மதியான இல்லச் சூழலை உருவாக்குவதில் உங்கள் பங்கு என்ன என்பதைப் புரியவைக்கிறது.':'This highlights the part you can play in creating a supportive home environment.',children:ta?'படைப்பாற்றல், வழிகாட்டுதல் மற்றும் அடுத்த தலைமுறைக்கு ஆதரவளித்தல் ஆகியவற்றை இணைக்கிறது.':'This brings together creativity, guidance and the way you nurture what is growing.',wellbeing:ta?'அன்றாட ஒழுங்குக்கும் உள் சமநிலைக்கும் இடையிலான தொடர்பை நினைவூட்டுகிறது.':'This is a reminder that daily rhythms and inner balance influence one another.',travel:ta?'புதிய அனுபவங்கள் உங்கள் பார்வையையும் வாய்ப்புகளையும் எவ்வாறு விரிவுபடுத்தலாம் என்பதைச் சுட்டுகிறது.':'This invites you to consider how new places and experiences can broaden your perspective.',property:ta?'நிலைத்தன்மை, பாதுகாப்பு மற்றும் நீண்டகால வளங்கள் குறித்து சிந்திக்க உதவுகிறது.':'This brings attention to stability, security and the resources you build over time.',spirituality:ta?'நம்பிக்கை, சிந்தனை மற்றும் உள்ளார்ந்த வளர்ச்சிக்கான உங்கள் பாதையை ஆராய அழைக்கிறது.':'This invites reflection on the beliefs and practices that give your life meaning.'};
+ let placement='';
+ if(lead)placement=ta?' '+lead.house+'ஆம் பாவ அதிபதி '+lead.lord+', உங்கள் '+lead.placed+'ஆம் பாவத்தில் இருப்பது '+HOUSE_MEANING.ta[lead.placed]+' அம்சங்களை இந்தத் துறையுடன் இணைக்கிறது.':' Your '+ordinal(lead.house)+'-house ruler, '+lead.lord+', is placed in your '+ordinal(lead.placed)+' house, bringing themes of '+HOUSE_MEANING.en[lead.placed]+' into this area of life.';
+ if(support&&support.lord!==lead?.lord)placement+=ta?' '+support.house+'ஆம் பாவ அதிபதி '+support.lord+' '+support.placed+'ஆம் பாவத்தில் இருப்பதும் கூடுதல் பின்னணியை வழங்குகிறது.':' Your '+ordinal(support.house)+'-house ruler, '+support.lord+', also sits in the '+ordinal(support.placed)+' house, adding another layer to the picture.';
+ return opening+' '+(angles[topic.id]||'')+placement;
+}
 function placementInsight(house,data,asc,lang,planetName){
  const sign=(asc+house-1)%12, lord=SIGN_LORDS[sign];
  const p=data.planets.find(x=>x.name===lord);
@@ -305,21 +316,23 @@ export function renderDetailedPredictions(data, asc, lang, names, planetName) {
 
   const timing = `<article class="dasha-summary-card"><div class="dasha-summary-icon">✧</div><div><div class="dasha-summary-kicker">${t.periodTitle}</div><h4>${dashaLine}</h4><p>${t.periodIntro}</p></div></article>`;
   const cards = TOPICS.map((topic, index) => {
-    const details = topic.houses.slice(0,3).map(h => placementInsight(h, data, asc, lang, planetName)).filter(Boolean);
     const evidence = topic.houses.slice(0,3).map(h => chartEvidence(h, data, asc, lang, names, planetName));
-    const advice = practicalGuidance(topic, data, asc, lang, planetName);
+    const story = personalisedTopicReading(topic, data, asc, lang, planetName);
+    const advice = lang === 'ta' ? topic.adviceTa : topic.adviceEn;
+    const action = TOPIC_ACTION[lang][topic.id];
     const title = lang === 'ta' ? topic.ta : topic.en;
     const focus = TOPIC_FOCUS[lang][topic.id];
-    const insightLabel = lang === 'ta' ? 'உங்கள் ஜாதகத்தின் தனிப்பட்ட விளக்கம்' : 'What this means in your chart';
-    const basisLabel = lang === 'ta' ? 'இந்த விளக்கத்திற்கான ஜாதக நிலைகள்' : 'Chart details behind this reading';
-    return `<article class="life-card detailed-card">
-      <div class="prediction-number">${String(index+1).padStart(2,'0')}</div>
-      <h4>${title}</h4>
-      <p class="prediction-summary">${focus}</p>
-      <div class="prediction-block personalised-reading"><strong>${insightLabel}</strong><ul>${details.map(d => `<li>${d}</li>`).join('')}</ul></div>
-      <details class="chart-evidence"><summary>${basisLabel}</summary><ul>${evidence.map(d => `<li>${d}</li>`).join('')}</ul></details>
-      <div class="prediction-block"><strong>${t.reading}</strong><p>${advice}</p></div>
-    </article>`;
+    const insightLabel = lang === 'ta' ? 'உங்கள் ஜாதகத்தின் கதை' : 'The story in your chart';
+    const basisLabel = lang === 'ta' ? 'ஜாதகக் கணக்கீட்டு விவரங்கள்' : 'Explore the chart details';
+    const nextLabel = lang === 'ta' ? 'உங்கள் அடுத்த நல்ல படி' : 'A helpful next step';
+    return '<article class="life-card detailed-card">'+
+      '<div class="prediction-number">'+String(index+1).padStart(2,'0')+'</div>'+
+      '<h4>'+title+'</h4>'+
+      '<p class="prediction-summary">'+focus+'</p>'+
+      '<div class="prediction-block personalised-reading"><strong>'+insightLabel+'</strong><p>'+story+'</p></div>'+
+      '<div class="prediction-block"><strong>'+t.reading+'</strong><p>'+advice+'</p><p class="topic-next-step"><strong>'+nextLabel+':</strong> '+action+'</p></div>'+
+      '<details class="chart-evidence"><summary>'+basisLabel+'</summary><ul>'+evidence.map(d=>'<li>'+d+'</li>').join('')+'</ul></details>'+
+    '</article>';
   }).join('');
   return timing + dashaTransitReading(data, asc, lang, names, planetName) + transitCalendar(data,lang,names,planetName) + fiveYearForecast(data, asc, lang, names, planetName) + personalHighlights(data, asc, lang, planetName) + cards;
 }
