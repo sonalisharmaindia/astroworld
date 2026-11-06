@@ -325,3 +325,14 @@ td{color:#463d4b}
 .hero h1 em{display:inline;color:var(--gold);font-style:normal}
 .hero p{max-width:700px;margin:0 auto;color:var(--muted);font-size:16px;line-height:1.8}
 @media(max-width:640px){.hero{margin:4px auto 28px;padding:30px 18px 24px}.hero h1{font-size:clamp(35px,9vw,48px);line-height:1.16;letter-spacing:-.5px}.hero p{font-size:14px;line-height:1.75}}
+
+/* Human, topic-led detailed prediction cards */
+.detailed-card .personalised-reading{padding:14px 15px 15px;background:linear-gradient(135deg,#fffaf0 0%,#f8f1e7 100%);border:1px solid #eadcc4;border-left:3px solid #b38a4d;border-radius:9px}
+.detailed-card .personalised-reading>strong{color:#8b6735;font-size:10px;letter-spacing:1.1px}
+.detailed-card .personalised-reading p{font-size:13px;line-height:1.85;color:#433b4a;margin:0}
+.detailed-card .prediction-block:not(.personalised-reading){border-top:1px solid #e7ddce;padding-top:14px}
+.detailed-card .topic-next-step{margin-top:10px!important;padding:10px 12px;background:#f0f4ef;border-radius:7px;color:#40594c!important}
+.detailed-card .topic-next-step strong{color:#45634f;font-weight:700}
+.detailed-card .chart-evidence{margin-top:12px}
+@media(max-width:720px){.detailed-card .personalised-reading{padding:12px}.detailed-card .personalised-reading p{font-size:12px;line-height:1.8}}
+@media print{.pdf-body .detailed-card .personalised-reading{padding:3mm}.pdf-body .detailed-card .personalised-reading p{font-size:9pt;line-height:1.7}.pdf-body .detailed-card .topic-next-step{padding:2mm}}
