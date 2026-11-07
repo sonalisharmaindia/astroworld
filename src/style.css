@@ -384,3 +384,23 @@ td{color:#463d4b}
  body.printing-annual .topbar,body.printing-annual .hero,body.printing-annual .form-card,body.printing-annual footer{display:none!important}
  body.printing-annual .annual-month,body.printing-annual .annual-overview,body.printing-annual .annual-cover{display:block!important}
 }
+
+/* More readable, story-led monthly forecast pages */
+.month-reading{margin:5mm 0 4mm;font-family:Georgia,'Noto Serif Tamil',serif;color:#403748}
+.month-reading p{font-size:8.7pt;line-height:1.58;margin:0 0 4mm;text-align:left;orphans:3;widows:3}
+.month-reading p:first-child{padding-left:4mm;border-left:2px solid #c4a16a}
+.month-reading p:last-child{margin-bottom:0}
+.annual-month .month-opening{font-size:12pt;line-height:1.4;margin:0 0 5mm}
+.annual-month .pdf-kicker{margin-top:10mm}
+.annual-month h2{font-size:26pt;margin:3mm 0 4mm}
+.annual-month .month-dasha,.annual-month .month-transits{padding:3mm 4mm;margin:2mm 0}
+.annual-month .month-dasha p,.annual-month .month-transits p{font-size:8pt;line-height:1.4}
+.annual-month .month-action{margin-top:4mm;padding:3mm 4mm}
+.annual-month .month-action p{font-size:10pt;line-height:1.35}
+.annual-month .month-turning{margin-top:3mm;padding-top:2mm}
+.annual-month .month-turning p{font-size:7.5pt;line-height:1.35}
+.annual-month .month-reminder{font-size:7pt;bottom:12mm}
+@media print{
+ .annual-month{break-inside:avoid;page-break-inside:avoid}
+ .month-reading p{break-inside:avoid;page-break-inside:avoid}
+}
