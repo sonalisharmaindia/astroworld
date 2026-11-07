@@ -404,3 +404,53 @@ td{color:#463d4b}
  .annual-month{break-inside:avoid;page-break-inside:avoid}
  .month-reading p{break-inside:avoid;page-break-inside:avoid}
 }
+
+/* On-screen 2027 report: mirrors the Kundli reading, with a matching PDF */
+.annual-forecast-section{margin-top:42px;padding-top:28px;border-top:1px solid #e4d5bd}
+.annual-screen-actions{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin:18px 0 24px}
+.annual-screen-hint{font-size:12px;color:#756b78}
+.annual-screen-book{display:grid;gap:22px}
+.annual-screen-cover{position:relative;overflow:hidden;min-height:330px;padding:46px 36px;border-radius:20px;background:radial-gradient(circle at 50% 35%,#51405e,#1a2038 75%);color:#fff5dc;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.annual-screen-cover .cover-ornament{font-size:32px;color:#d8b56f}
+.annual-screen-cover .cover-brand{font:700 12px Arial,sans-serif;letter-spacing:4px;margin-top:14px;color:#e8c477}
+.annual-screen-cover .cover-rule{width:110px;height:1px;background:#b99960;margin:22px auto}
+.annual-screen-cover .cover-kicker{font:700 10px Arial,sans-serif;letter-spacing:2px;color:#e8c477}
+.annual-screen-cover h1{font:normal clamp(30px,5vw,48px) Georgia,serif;margin:18px 0 8px;color:#fff4dc}
+.annual-screen-cover .cover-subtitle{font:700 11px Arial,sans-serif;letter-spacing:2px}
+.annual-screen-cover .cover-orbit{font-size:24px;color:#d5b36e;margin:18px 0}
+.annual-screen-cover .cover-details{display:flex;gap:18px;flex-wrap:wrap;justify-content:center;font-size:13px;color:#eee0c5}
+.annual-screen-overview,.annual-screen-month{background:#fffdf8;border:1px solid #e6d7bd;border-radius:16px;padding:clamp(20px,3vw,34px);box-shadow:0 8px 28px #3d2b160a;color:#403748}
+.annual-screen-overview .pdf-kicker,.annual-screen-month .pdf-kicker{font:700 10px Arial,sans-serif;letter-spacing:2px;color:#a17b3e;margin-bottom:12px}
+.annual-screen-overview .pdf-body{font:15px/1.8 Georgia,'Noto Serif Tamil',serif}
+.annual-screen-overview .pdf-body h3{font:normal 25px Georgia,'Noto Serif Tamil',serif;color:#493957;margin:4px 0 14px}
+.annual-screen-overview .pdf-body p{margin:0 0 18px}
+.annual-screen-overview .annual-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:22px 0}
+.annual-screen-overview .annual-stats>div{padding:15px;border:1px solid #e5d5b8;border-radius:10px;background:#fffaf0}
+.annual-screen-overview .annual-stats small{display:block;color:#987443;font:700 10px Arial,sans-serif;margin-bottom:8px}
+.annual-screen-overview .annual-stats strong{font:700 15px Georgia,serif;color:#493957}
+.annual-screen-overview .annual-themes,.annual-screen-overview .annual-events{padding-left:22px}
+.annual-screen-overview li{margin:8px 0;line-height:1.65}
+.annual-screen-overview .annual-note{padding:14px 16px;border-left:3px solid #b18a4d;background:#f7f0e4;border-radius:0 8px 8px 0;font-size:13px}
+.annual-screen-month{position:relative}
+.annual-screen-month h2{font:normal clamp(30px,4vw,42px) Georgia,'Noto Serif Tamil',serif;color:#493957;margin:6px 0 8px}
+.annual-screen-month .month-opening{font:italic 16px Georgia,'Noto Serif Tamil',serif;color:#795b38;margin:0 0 20px}
+.annual-screen-month .month-dasha,.annual-screen-month .month-transits{padding:13px 16px;background:#f7f0e5;border-radius:9px;margin:10px 0}
+.annual-screen-month .month-dasha strong,.annual-screen-month .month-transits strong,.annual-screen-month .month-turning strong{display:block;color:#8b693c;font:700 10px Arial,sans-serif;letter-spacing:.8px;margin-bottom:6px}
+.annual-screen-month .month-dasha p,.annual-screen-month .month-transits p{margin:0;font-size:13px;line-height:1.6}
+.annual-screen-month .month-reading{margin:22px 0;font-family:Georgia,'Noto Serif Tamil',serif;color:#403748}
+.annual-screen-month .month-reading p{font-size:15px;line-height:1.85;margin:0 0 17px}
+.annual-screen-month .month-reading p:first-child{padding-left:14px;border-left:2px solid #c4a16a}
+.annual-screen-month .month-action{margin-top:20px;padding:16px 18px;background:#edf2ec;border-left:3px solid #819783;border-radius:0 9px 9px 0}
+.annual-screen-month .month-action small{font:700 10px Arial,sans-serif;letter-spacing:1px;color:#4f6c57}
+.annual-screen-month .month-action p{margin:7px 0 0;font:normal 17px/1.55 Georgia,'Noto Serif Tamil',serif;color:#405648}
+.annual-screen-month .month-turning{margin-top:16px;padding-top:14px;border-top:1px solid #e4d6c1}
+.annual-screen-month .month-turning p{font-size:13px;line-height:1.6;margin:0}
+.annual-screen-month .month-reminder{margin-top:18px;padding-top:12px;border-top:1px solid #eee3d2;color:#897c6c;font-size:11px;font-style:italic}
+@media(max-width:650px){
+ .annual-screen-overview .annual-stats{grid-template-columns:1fr}
+ .annual-screen-cover{padding:34px 18px;min-height:280px}
+ .annual-screen-cover .cover-details{flex-direction:column;gap:6px}
+ .annual-screen-month .month-reading p{font-size:14px;line-height:1.75}
+ .annual-screen-actions{align-items:stretch}
+ .annual-screen-actions .primary{width:100%}
+}
