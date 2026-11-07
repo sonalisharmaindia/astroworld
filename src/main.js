@@ -22,7 +22,7 @@ const names = {
     dashaLords:['கேது','சுக்கிரன்','சூரியன்','சந்திரன்','செவ்வாய்','ராகு','குரு','சனி','புதன்'],placeFound:'இடம் கண்டறியப்பட்டது. கணக்கிடுவதற்கு முன் ஆயத்தொலைவுகள் மற்றும் நேர மண்டலத்தைச் சரிபார்க்கவும்.',placeError:'இடத்தைக் கண்டறிய முடியவில்லை. அட்சரேகை, தீர்க்கரேகை, நேர மண்டலத்தை கைமுறையாக உள்ளிடுங்கள்.',loading:'Astronomy Engine ஏற்றப்பட்டு கணக்கிடப்படுகிறது…',error:'கணக்கீடு தோல்வியடைந்தது. விவரங்களைச் சரிபார்த்து மீண்டும் முயற்சிக்கவும்.',lagna:'லக்னம்',moonSign:'சந்திர ராசி',birthStar:'ஜென்ம நட்சத்திரம்',currentDasha:'நடப்பு மகாதசை',planet:'கிரகம்',sign:'ராசி',degree:'பாகை',house:'பாவம்',retrograde:'வக்கிரம்',yes:'ஆம்',no:'இல்லை',from:'தொடக்கம்',to:'முடிவு',period:'காலம்',maha:'மகாதசை',antar:'அந்தர்தசை',pada:'பாதம்',nakLord:'நட்சத்திர அதிபதி',balance:'பிறப்பில் மீதமுள்ள தசை',marriage:'திருமணம் மற்றும் கூட்டாண்மை',career:'தொழில் மற்றும் பணி',finance:'செல்வம் மற்றும் வருமானம்',overall:'வாழ்க்கைப் பாதை',reportMarriage:'திருமண அம்சங்களுக்கு 7ஆம் பாவமும் அதன் அதிபதியும் பாரம்பரியமாகப் பார்க்கப்படுகின்றன. உங்கள் ஜாதகத்தில் {planet} {house}ஆம் பாவத்தில் உள்ளது. இது பல குறியீடுகளில் ஒன்று மட்டுமே. உரையாடல், மதிப்புகள் மற்றும் நடைமுறைப் பொருத்தத்தை கருத்தில் கொள்ளுங்கள்.',reportCareer:'தொழிலுக்கு 10ஆம் பாவம், அதன் அதிபதி மற்றும் சனி பாரம்பரியமாகப் பார்க்கப்படுகின்றன. {planet} {house}ஆம் பாவத்தில் உள்ளது. கல்வி மற்றும் வாழ்க்கைச் சூழலுடன் சேர்த்துப் பாருங்கள்.',reportFinance:'சேமிப்பு மற்றும் வருமானத்திற்கு 2ஆம் மற்றும் 11ஆம் பாவங்கள் பாரம்பரியமாகப் பார்க்கப்படுகின்றன. {planet} {house}ஆம் பாவத்தில் உள்ளது. இது வருமானம் அல்லது முதலீட்டு பலனுக்கான கணிப்பு அல்ல.',reportOverall:'லக்னம், சந்திரன் மற்றும் நடப்பு தசை ஆகியவை வாழ்க்கை அம்சங்களுக்காக ஒன்றாகப் படிக்கப்படுகின்றன. இதை சிந்தனைக்கான கட்டமைப்பாகப் பயன்படுத்துங்கள்; நிர்ணயிக்கப்பட்ட எதிர்காலமாக அல்ல.'
   }
 };
-let lang='en', lastChart=null, enginePromise=null;
+let lang='en', lastChart=null, annualChart=null, enginePromise=null;
 const PLANET_IDS=[['Sun','sun'],['Moon','moon'],['Mars','mars'],['Mercury','mercury'],['Jupiter','jupiter'],['Venus','venus'],['Saturn','saturn'],['Rahu','rahu'],['Ketu','ketu']];
 const DASHA_YEARS={Ketu:7,Venus:20,Sun:6,Moon:10,Mars:7,Rahu:18,Jupiter:16,Saturn:19,Mercury:17};
 const DASHA_ORDER=['Ketu','Venus','Sun','Moon','Mars','Rahu','Jupiter','Saturn','Mercury'];
@@ -195,7 +195,7 @@ function renderChart(data){
   $('nakshatraPanel').innerHTML=`<p><strong>${t.birthStar}:</strong> ${t.nak[nakIndex]} &nbsp; <strong>${t.pada}:</strong> ${pada}</p><p><strong>${t.nakLord}:</strong> ${t.dashaLords[DASHA_ORDER.indexOf(NAK_LORDS[nakIndex])]}</p><p><strong>${t.balance}:</strong> ${data.dasha.balance.toFixed(2)} ${lang==='ta'?'ஆண்டுகள்':'years'} (${t.dashaLords[DASHA_ORDER.indexOf(data.dasha.firstLord)]})</p>`;
   renderDasha(data.dasha);
   $('lifeReports').innerHTML=renderDetailedPredictions(data,asc,lang,names,planetName);
-  render2027ForecastOnScreen(data);
+  $('annualForecastSection').hidden=true;
   $('planetTable').innerHTML=`<table><thead><tr><th>${t.planet}</th><th>${t.sign}</th><th>${t.degree}</th><th>${t.house}</th></tr></thead><tbody>${data.planets.map(p=>`<tr><td>${planetName(p.name)}</td><td>${signName(Math.floor(norm(p.longitude)/30))}</td><td>${(norm(p.longitude)%30).toFixed(2)}°</td><td>${houseOf(p,asc)}</td></tr>`).join('')}</tbody></table>`;
   $('report').hidden=false;$('report').scrollIntoView({behavior:'smooth'});
 }
@@ -281,7 +281,7 @@ $('birthForm').addEventListener('submit',async e=>{
     // Validate that the IANA timezone exists before converting local birth time.
     new Intl.DateTimeFormat('en',{timeZone:tz});
     lastChart=await calculate($('birthDate').value,$('birthTime').value,tz,lat,lon);
-    renderChart(lastChart);$('engineStatus').textContent='Calculation complete · Lahiri sidereal';
+    $('annualForecastSection').hidden=true;annualChart=null;renderChart(lastChart);$('engineStatus').textContent='Calculation complete · Lahiri sidereal';
   }catch(err){console.error(err);$('engineStatus').textContent=names[lang].error+' '+(err.message||'');}
   finally{btn.disabled=false;}
 });
@@ -387,22 +387,29 @@ function render2027ForecastOnScreen(data){
  $('annualForecastIntro').textContent=ta?'ஆண்டு முழுவதற்குமான பார்வையையும், ஜனவரி முதல் டிசம்பர் வரை உங்கள் ஜாதகத்தை அடிப்படையாகக் கொண்ட மாதாந்திர வழிகாட்டுதலையும் இங்கே படிக்கலாம்.':'Explore your year at a glance, followed by twelve detailed monthly readings shaped by your birth chart, planetary periods and transits.';
  $('downloadAnnualPdf').textContent=ta?'2027 PDF அறிக்கையைப் பதிவிறக்கவும்':'Download 2027 Predictions PDF';
 }
-function show2027Predictions(){
- const btn=$('download2027'),status=$('engineStatus');
- if(lastChart){$('annualForecastSection').scrollIntoView({behavior:'smooth'});return;}
- btn.disabled=true;
+async function show2027Predictions(){
+ const btn=$('download2027'),status=$('engineStatus');btn.disabled=true;
  try{
-  const date=$('birthDate').value,time=$('birthTime').value,timezone=$('timezone').value.trim(),lat=Number($('latitude').value),lon=Number($('longitude').value);
-  if(!date||!time||!timezone||!Number.isFinite(lat)||!Number.isFinite(lon)||Math.abs(lat)>90||Math.abs(lon)>180)throw new Error(lang==='ta'?'முழுமையான பிறப்பு விவரங்களை உள்ளிடுங்கள்.':'Please complete all birth details, including valid coordinates.');
-  new Intl.DateTimeFormat('en',{timeZone:timezone});
-  status.textContent=lang==='ta'?'2027 கணிப்புகள் தயாராகின்றன…':'Preparing your personalised 2027 predictions…';
-  calculate(date,time,timezone,lat,lon).then(data=>{lastChart=data;renderChart(data);$('annualForecastSection').scrollIntoView({behavior:'smooth'});status.textContent=lang==='ta'?'2027 கணிப்புகள் திரையில் தயாராக உள்ளன.':'Your 2027 predictions are ready on screen.';}).catch(err=>{console.error(err);status.textContent=err.message||'Could not create the forecast.';}).finally(()=>{btn.disabled=false;});
- }catch(err){status.textContent=err.message;btn.disabled=false;}
+  let data=lastChart;
+  if(!data){
+   const date=$('birthDate').value,time=$('birthTime').value,timezone=$('timezone').value.trim(),lat=Number($('latitude').value),lon=Number($('longitude').value);
+   if(!date||!time||!timezone||!Number.isFinite(lat)||!Number.isFinite(lon)||Math.abs(lat)>90||Math.abs(lon)>180)throw new Error(lang==='ta'?'முழுமையான பிறப்பு விவரங்களை உள்ளிடுங்கள்.':'Please complete all birth details, including valid coordinates.');
+   new Intl.DateTimeFormat('en',{timeZone:timezone});
+   status.textContent=lang==='ta'?'2027 கணிப்புகள் தயாராகின்றன…':'Preparing your personalised 2027 predictions…';
+   data=await calculate(date,time,timezone,lat,lon);
+  }
+  annualChart=data;
+  $('report').hidden=true;
+  render2027ForecastOnScreen(annualChart);
+  status.textContent=lang==='ta'?'2027 கணிப்புகள் திரையில் தயாராக உள்ளன.':'Your 2027 predictions are ready on screen.';
+  $('annualForecastSection').scrollIntoView({behavior:'smooth'});
+ }catch(err){console.error(err);status.textContent=err.message||'Could not create the forecast.';}
+ finally{btn.disabled=false;}
 }
 function download2027Predictions(){
- if(!lastChart){$('engineStatus').textContent=lang==='ta'?'முதலில் ஜாதகத்தை கணக்கிடுங்கள்.':'Please calculate your Kundli first.';return;}
+ if(!annualChart){$('engineStatus').textContent=lang==='ta'?'முதலில் 2027 கணிப்புகளைத் திறக்கவும்.':'Open your 2027 predictions first.';return;}
  const btn=$('downloadAnnualPdf');btn.disabled=true;
- try{$('pdfBook').innerHTML=build2027Forecast(lastChart);document.body.classList.add('printing-annual');window.print();setTimeout(()=>{document.body.classList.remove('printing-annual');btn.disabled=false;},1200);}
+ try{$('pdfBook').innerHTML=build2027Forecast(annualChart);document.body.classList.add('printing-annual');window.print();setTimeout(()=>{document.body.classList.remove('printing-annual');btn.disabled=false;},1200);}
  catch(err){console.error(err);$('engineStatus').textContent=err.message||'Could not create the PDF.';btn.disabled=false;}
 }
 $('download2027').addEventListener('click',show2027Predictions);
