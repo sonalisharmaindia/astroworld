@@ -379,8 +379,8 @@ function render2027ForecastOnScreen(data){
   .replace(/<article class="pdf-page annual-cover"/,'<article class="annual-screen-cover"')
   .replace(/<article class="pdf-page annual-overview"/,'<article class="annual-screen-overview"')
   .replace(/<article class="pdf-page annual-month"/g,'<article class="annual-screen-month"')
-  .replace(/<div class="pdf-running">[\\s\\S]*?<\\/div>/g,'')
-  .replace(/<div class="pdf-page-no">[\\s\\S]*?<\\/div>/g,'');
+  .replace(new RegExp('<div class="pdf-running">.*?</div>','g'),'')
+  .replace(new RegExp('<div class="pdf-page-no">.*?</div>','g'),'');
  $('annualForecastScreen').innerHTML=html;
  $('annualForecastSection').hidden=false;
  $('annualForecastHeading').textContent=ta?'2027ஆம் ஆண்டுக்கான உங்கள் தனிப்பட்ட பலன்கள்':'Your Personal Predictions for 2027';
