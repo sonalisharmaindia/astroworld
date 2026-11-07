@@ -195,6 +195,7 @@ function renderChart(data){
   $('nakshatraPanel').innerHTML=`<p><strong>${t.birthStar}:</strong> ${t.nak[nakIndex]} &nbsp; <strong>${t.pada}:</strong> ${pada}</p><p><strong>${t.nakLord}:</strong> ${t.dashaLords[DASHA_ORDER.indexOf(NAK_LORDS[nakIndex])]}</p><p><strong>${t.balance}:</strong> ${data.dasha.balance.toFixed(2)} ${lang==='ta'?'ஆண்டுகள்':'years'} (${t.dashaLords[DASHA_ORDER.indexOf(data.dasha.firstLord)]})</p>`;
   renderDasha(data.dasha);
   $('lifeReports').innerHTML=renderDetailedPredictions(data,asc,lang,names,planetName);
+  render2027ForecastOnScreen(data);
   $('planetTable').innerHTML=`<table><thead><tr><th>${t.planet}</th><th>${t.sign}</th><th>${t.degree}</th><th>${t.house}</th></tr></thead><tbody>${data.planets.map(p=>`<tr><td>${planetName(p.name)}</td><td>${signName(Math.floor(norm(p.longitude)/30))}</td><td>${(norm(p.longitude)%30).toFixed(2)}°</td><td>${houseOf(p,asc)}</td></tr>`).join('')}</tbody></table>`;
   $('report').hidden=false;$('report').scrollIntoView({behavior:'smooth'});
 }
@@ -372,18 +373,40 @@ function build2027Forecast(data){
  });
  return pages.join('');
 }
-async function download2027Predictions(){
- const btn=$('download2027'),status=$('engineStatus');btn.disabled=true;
+function render2027ForecastOnScreen(data){
+ const ta=lang==='ta';
+ const html=build2027Forecast(data)
+  .replace(/<article class="pdf-page annual-cover"/,'<article class="annual-screen-cover"')
+  .replace(/<article class="pdf-page annual-overview"/,'<article class="annual-screen-overview"')
+  .replace(/<article class="pdf-page annual-month"/g,'<article class="annual-screen-month"')
+  .replace(/<div class="pdf-running">[\\s\\S]*?<\\/div>/g,'')
+  .replace(/<div class="pdf-page-no">[\\s\\S]*?<\\/div>/g,'');
+ $('annualForecastScreen').innerHTML=html;
+ $('annualForecastSection').hidden=false;
+ $('annualForecastHeading').textContent=ta?'2027ஆம் ஆண்டுக்கான உங்கள் தனிப்பட்ட பலன்கள்':'Your Personal Predictions for 2027';
+ $('annualForecastIntro').textContent=ta?'ஆண்டு முழுவதற்குமான பார்வையையும், ஜனவரி முதல் டிசம்பர் வரை உங்கள் ஜாதகத்தை அடிப்படையாகக் கொண்ட மாதாந்திர வழிகாட்டுதலையும் இங்கே படிக்கலாம்.':'Explore your year at a glance, followed by twelve detailed monthly readings shaped by your birth chart, planetary periods and transits.';
+ $('downloadAnnualPdf').textContent=ta?'2027 PDF அறிக்கையைப் பதிவிறக்கவும்':'Download 2027 Predictions PDF';
+}
+function show2027Predictions(){
+ const btn=$('download2027'),status=$('engineStatus');
+ if(lastChart){$('annualForecastSection').scrollIntoView({behavior:'smooth'});return;}
+ btn.disabled=true;
  try{
   const date=$('birthDate').value,time=$('birthTime').value,timezone=$('timezone').value.trim(),lat=Number($('latitude').value),lon=Number($('longitude').value);
   if(!date||!time||!timezone||!Number.isFinite(lat)||!Number.isFinite(lon)||Math.abs(lat)>90||Math.abs(lon)>180)throw new Error(lang==='ta'?'முழுமையான பிறப்பு விவரங்களை உள்ளிடுங்கள்.':'Please complete all birth details, including valid coordinates.');
-  new Intl.DateTimeFormat('en',{timeZone:timezone});status.textContent=lang==='ta'?'2027 கணிப்புகள் தயாராகின்றன…':'Preparing your personalised 2027 forecast…';
-  const data=await calculate(date,time,timezone,lat,lon);$('pdfBook').innerHTML=build2027Forecast(data);document.body.classList.add('printing-annual');window.print();setTimeout(()=>document.body.classList.remove('printing-annual'),1200);
-  status.textContent=lang==='ta'?'2027 PDF அச்சிட/சேமிக்க தயாராக உள்ளது.':'2027 forecast is ready to print or save as PDF.';
- }catch(err){console.error(err);status.textContent=err.message|| (lang==='ta'?'கணிப்பு உருவாக்க முடியவில்லை.':'Could not create the forecast.');}
- finally{btn.disabled=false;}
+  new Intl.DateTimeFormat('en',{timeZone:timezone});
+  status.textContent=lang==='ta'?'2027 கணிப்புகள் தயாராகின்றன…':'Preparing your personalised 2027 predictions…';
+  calculate(date,time,timezone,lat,lon).then(data=>{lastChart=data;renderChart(data);$('annualForecastSection').scrollIntoView({behavior:'smooth'});status.textContent=lang==='ta'?'2027 கணிப்புகள் திரையில் தயாராக உள்ளன.':'Your 2027 predictions are ready on screen.';}).catch(err=>{console.error(err);status.textContent=err.message||'Could not create the forecast.';}).finally(()=>{btn.disabled=false;});
+ }catch(err){status.textContent=err.message;btn.disabled=false;}
 }
-$('download2027').addEventListener('click',download2027Predictions);
+function download2027Predictions(){
+ if(!lastChart){$('engineStatus').textContent=lang==='ta'?'முதலில் ஜாதகத்தை கணக்கிடுங்கள்.':'Please calculate your Kundli first.';return;}
+ const btn=$('downloadAnnualPdf');btn.disabled=true;
+ try{$('pdfBook').innerHTML=build2027Forecast(lastChart);document.body.classList.add('printing-annual');window.print();setTimeout(()=>{document.body.classList.remove('printing-annual');btn.disabled=false;},1200);}
+ catch(err){console.error(err);$('engineStatus').textContent=err.message||'Could not create the PDF.';btn.disabled=false;}
+}
+$('download2027').addEventListener('click',show2027Predictions);
+$('downloadAnnualPdf').addEventListener('click',download2027Predictions);
 
 function buildPdfBook(){
   if(!lastChart) return;
